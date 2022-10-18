@@ -1,4 +1,4 @@
 
 
 # ignore debug folder
-Debug/
+Debug/*
