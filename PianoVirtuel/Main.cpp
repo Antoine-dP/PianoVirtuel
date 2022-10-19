@@ -8,7 +8,8 @@
 
 #include "Windows.h"
 #include <iostream>
-#include <stdio.h> 
+#include <stdio.h>
+#include <mmsystem.h>
 
 // Fichiers d'en-têtes pour OpenGL et GLUT
 #ifdef __APPLE__
@@ -23,7 +24,7 @@
 
 #endif
 
-
+using namespace std;
 
 // Structure de données simpliste
 // pour stocker un sommet 3D et 
@@ -51,6 +52,16 @@ vertex cube[8] = {
    { 0.5f, 0.5f,-0.5f,0.0f,0.0f,1.0f},
    { 0.5f,-0.5f,-0.5f,1.0f,1.0f,1.0f}
 };
+
+vertex toucheBlanche[4] = {
+   {-0.25f, 0.0f,-1.0f,1.0f,1.0f,1.0f},
+   { 0.25f, 0.0f,-1.0f,1.0f,1.0f,1.0f},
+   { 0.25f, 0.0f, 1.0f,1.0f,1.0f,1.0f},
+   {-0.25f, 0.0f, 1.0f,1.0f,1.0f,1.0f}
+};
+
+
+
 
 vertex cubeBlanc[8] = {
    {-0.5f,-0.5f, 0.5f,1.0f,1.0f,1.0f},
@@ -91,6 +102,8 @@ textureCoord faceTexcoord[6][4] = {
 
 // Quelques variables globales (c'est pas bien)
 GLfloat pointSize = 1.0f;
+GLint numOfKeys = 8;
+GLint downKey = 0;
 
 // Rotations autour de X et Y
 GLfloat angleX = 0.0f;
@@ -100,18 +113,23 @@ GLint oldY = 0;
 GLboolean boutonClick = false;
 
 // Taille de la fenêtre
-int windowW = 640;
-int windowH = 480;
+int windowW = 640*2;
+int windowH = 480*2;
 float focale = 65.0f;
 float _near = 0.1f;
 float _far = 100.0f;
+float rat = 1;
 
 // Déclarations des fonctions de rappel (callbacks)
 GLvoid affichage();
 GLvoid clavier(unsigned char touche, int x, int y);
+GLvoid clavierUP(unsigned char touche, int x, int y);
 GLvoid souris(int bouton, int etat, int x, int y);
 GLvoid deplacementSouris(int x, int y);
 GLvoid redimensionner(int w, int h);
+
+// Déclaration d'autres fonctions
+void drawOctave();
 
 // Texture
 GLuint textureID = 0;
@@ -130,7 +148,9 @@ GLboolean colorCube = false;
 GLint texEnvMode = 1;
 GLboolean alpha = false;
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // Definition de la fonction d'affichage
@@ -144,24 +164,6 @@ GLvoid affichage() {
     glEnable(GL_TEXTURE_2D);
 
 
-    // Combinaison avec le fragment
-    switch (texEnvMode) {
-    case 0:
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-        break;
-    case 1:
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        break;
-    case 2:
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        break;
-
-    default:
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-        break;
-    }
-
-
     // Animation du cube!
     glLoadIdentity();
     glRotatef(-angleY, 1.0f, 0.0f, 0.0f);
@@ -169,36 +171,64 @@ GLvoid affichage() {
 
     // Dessin d'un cube colore
     // face par face
-    for (int i = 0; i < 6; i++) {
-        glBegin(GL_POLYGON);
-        for (int j = 0; j < 4; j++) {
-            // Couleur
-            if (!alpha) {
-                glDisable(GL_BLEND);
-                if (colorCube) {
-                    glColor3f(cube[face[i][j]].r, cube[face[i][j]].g, cube[face[i][j]].b);
-                }
-                else {
-                    glColor3f(cubeBlanc[face[i][j]].r, cubeBlanc[face[i][j]].g, cubeBlanc[face[i][j]].b);
-                }
-            }
-            else {
-                // enabling blend
-                glEnable(GL_BLEND);
+    //for (int i = 0; i < 6; i++) {
+    //    glBegin(GL_POLYGON);
+    //    for (int j = 0; j < 4; j++) {
+    //        // Couleur
+    //        if (!alpha) {
+    //            glDisable(GL_BLEND);
+    //            if (colorCube) {
+    //                glColor3f(cube[face[i][j]].r, cube[face[i][j]].g, cube[face[i][j]].b);
+    //            }
+    //            else {
+    //                glColor3f(cubeBlanc[face[i][j]].r, cubeBlanc[face[i][j]].g, cubeBlanc[face[i][j]].b);
+    //            }
+    //        }
+    //        else {
+    //            // enabling blend
+    //            glEnable(GL_BLEND);
+    //            if (colorCube) {
+    //                glColor4f(cube[face[i][j]].r, cube[face[i][j]].g, cube[face[i][j]].b, 0.5f);
+    //            }
+    //            else {
+    //                glColor4f(cubeBlanc[face[i][j]].r, cubeBlanc[face[i][j]].g, cubeBlanc[face[i][j]].b, 0.5f);
+    //            }
+    //        }
+    //        // Tex
+    //        glTexCoord2d(faceTexcoord[i][j].s, faceTexcoord[i][j].t);
+    //        glVertex3f(cube[face[i][j]].x, cube[face[i][j]].y, cube[face[i][j]].z);
+    //    }
+    //    glEnd();
+    //}
 
-                if (colorCube) {
-                    glColor4f(cube[face[i][j]].r, cube[face[i][j]].g, cube[face[i][j]].b, 0.5f);
-                }
-                else {
-                    glColor4f(cubeBlanc[face[i][j]].r, cubeBlanc[face[i][j]].g, cubeBlanc[face[i][j]].b, 0.5f);
-                }
-            }
-            // Tex
-            glTexCoord2d(faceTexcoord[i][j].s, faceTexcoord[i][j].t);
-            glVertex3f(cube[face[i][j]].x, cube[face[i][j]].y, cube[face[i][j]].z);
-        }
-        glEnd();
-    }
+
+    // Draw octave (only white keys)
+    drawOctave();
+    
+
+    //glBegin(GL_QUADS);
+    //for (int i = 0; i < 4; i++)
+    //{
+    //    //glColor3f(toucheBlanche[i].r, toucheBlanche[i].g, toucheBlanche[i].b);
+    //    glVertex3f(toucheBlanche[i].x + (i + (1-numOfKeys)/2) * 0.55f , toucheBlanche[i].y, toucheBlanche[i].z);
+    //}
+    //glEnd();
+    //glBegin(GL_QUADS);
+    //for (int i = 0; i < 4; i++)
+    //{
+    //    glColor3f(toucheBlanche[i].r, toucheBlanche[i].g, toucheBlanche[i].b);
+    //    glVertex3f(toucheBlanche[i].x + 0.55f , toucheBlanche[i].y, toucheBlanche[i].z);
+    //}
+    //glEnd();
+    //glBegin(GL_QUADS);
+    //for (int i = 0; i < 4; i++)
+    //{
+    //    glColor3f(toucheBlanche[i].r, toucheBlanche[i].g, toucheBlanche[i].b);
+    //    glVertex3f(toucheBlanche[i].x - 0.55f, toucheBlanche[i].y, toucheBlanche[i].z);
+    //}
+    //glEnd();
+
+    
 
     glFlush();
     glutSwapBuffers();
@@ -214,24 +244,49 @@ GLvoid clavier(unsigned char touche, int x, int y) {
     // 's' : affichage des sommets du carre
 
     switch (touche) {
-    case 'p': // carre plein
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //case 'p': // carre plein
+    //    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //    break;
+    //case 'f': // fil de fer
+    //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //    break;
+    //case 's': // sommets du carre
+    //    glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+    //    break;
+    //    // Gestion du tampon de profondeur
+    //case 'd':
+    //    glEnable(GL_DEPTH_TEST);
+    //    glutPostRedisplay();
+    //    break;
+    //case 'D':
+    //    glDisable(GL_DEPTH_TEST);
+    //    glutPostRedisplay();
+    //    break;
+        
+    case 'q':
+        downKey = 1;
+        PlaySound(TEXT("mywavsound.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
-    case 'f': // fil de fer
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    case 's':
+        downKey = 2;
         break;
-    case 's': // sommets du carre
-        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-        break;
-
-        // Gestion du tampon de profondeur
     case 'd':
-        glEnable(GL_DEPTH_TEST);
-        glutPostRedisplay();
+        downKey = 3;
         break;
-    case 'D':
-        glDisable(GL_DEPTH_TEST);
-        glutPostRedisplay();
+    case 'f':
+        downKey = 4;
+        break;
+    case 'j':
+        downKey = 5;
+        break;
+    case 'k':
+        downKey = 6;
+        break;
+    case 'l':
+        downKey = 7;
+        break;
+    case 'm':
+        downKey = 8;
         break;
 
     case '+':
@@ -262,7 +317,7 @@ GLvoid clavier(unsigned char touche, int x, int y) {
         alpha = !alpha;
         break;
 
-    case 'q': // quitter
+    //case 'q': // quitter
     case 27:
         exit(0);
         break;
@@ -272,19 +327,37 @@ GLvoid clavier(unsigned char touche, int x, int y) {
     glutPostRedisplay();
 }
 
+GLvoid clavierUP(unsigned char touche, int x, int y) {
+    switch (touche) {
+
+    case 'q':
+    case 's':
+    case 'd':
+    case 'f':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+        downKey = 0;
+        break;
+    }
+    glutPostRedisplay();
+}
+
 // Fonction de rappel de la souris
 GLvoid souris(int bouton, int etat, int x, int y) {
     // Test pour voir si le bouton gauche de la souris est appuyé
-    if (bouton == GLUT_LEFT_BUTTON && etat == GLUT_DOWN) {
-        boutonClick = true;
-        oldX = x;
-        oldY = y;
-    }
+    //if (bouton == GLUT_LEFT_BUTTON && etat == GLUT_DOWN) {
+    //    boutonClick = true;
+    //    oldX = x;
+    //    oldY = y;
+    //}
+    cout << "x: " << x << ", y: " << y << endl;
 
     // si on relache le bouton gauche
-    if (bouton == GLUT_LEFT_BUTTON && etat == GLUT_UP) {
-        boutonClick = false;
-    }
+    //if (bouton == GLUT_LEFT_BUTTON && etat == GLUT_UP) {
+    //    boutonClick = false;
+    //}
 }
 
 GLvoid deplacementSouris(int x, int y) {
@@ -329,7 +402,7 @@ GLvoid redimensionner(int w, int h) {
     gluPerspective(focale, ratio, _near, _far);
 
     // Placement de la caméra
-    gluLookAt(0, 0, 2, 0, 0, 0, 0, 1, 0);
+    gluLookAt(0, 5, 0.0001f, 0, 0, 0, 0, 1, 0);
 
     // Retourne a la pile modelview
     glMatrixMode(GL_MODELVIEW);
@@ -343,14 +416,14 @@ int main(int argc, char* argv[])
     // Choix du mode d'affichage (ici RVB)
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
     // Position initiale de la fenetre GLUT
-    glutInitWindowPosition(200, 200);
+    glutInitWindowPosition(300, 50);
     // Taille initiale de la fenetre GLUT
     glutInitWindowSize(windowW, windowH);
     // Creation de la fenetre GLUT
     glutCreateWindow("Cube3D");
 
     // Définition de la couleur d'effacement du framebuffer
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
 
     // Initialement on desactive le Z-buffer
     glEnable(GL_DEPTH_TEST);
@@ -366,6 +439,7 @@ int main(int argc, char* argv[])
     // Définition des fonctions de callbacks
     glutDisplayFunc(affichage);
     glutKeyboardFunc(clavier);
+    glutKeyboardUpFunc(clavierUP);
     // Nouveaux callbacks
     glutMouseFunc(souris);
     glutMotionFunc(deplacementSouris);
@@ -377,10 +451,52 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void drawOctave() {
+    glColor3f(1.0f, 1.0f, 1.0f);
+    if (numOfKeys % 2 == 0) {
+        for (int j = 0; j < numOfKeys; j++)
+        {
+            glBegin(GL_QUADS);
+            if (downKey == j+1)
+            {
+                glColor3f(0.0f, 0.0f, 0.5f);
+            }
+            else
+            {
+                glColor3f(1.0f, 1.0f, 1.0f);
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                
+                glVertex3f(toucheBlanche[i].x + (j - numOfKeys / 2 + 0.5f) * 0.55f, toucheBlanche[i].y, toucheBlanche[i].z);
+            }
+            glEnd();
+        }
+    }
+    else {
+        for (int j = 0; j < numOfKeys; j++)
+        {
+            glBegin(GL_QUADS);
+            for (int i = 0; i < 4; i++)
+            {
+                glVertex3f(toucheBlanche[i].x + (j + (1 - numOfKeys) / 2) * 0.55f, toucheBlanche[i].y, toucheBlanche[i].z);
+            }
+            glEnd();
+        }
+    }
+}
 
 
 
+int main() {
+    //PlaySound(TEXT("mywavsound.wav"), NULL, SND_FILENAME); - My erroring code
+    PlaySound(TEXT("mywavsound.wav"), NULL, SND_FILENAME | SND_ASYNC);// - the correct code
 
-
-
-
+    int test = 0;
+    cin >> test;
+    return 0;
+}
