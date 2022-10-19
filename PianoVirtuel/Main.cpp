@@ -9,7 +9,10 @@
 #include "Windows.h"
 #include <iostream>
 #include <stdio.h>
+
 #include <mmsystem.h>
+#include <conio.h>
+#pragma comment (lib,"Winmm.lib")
 
 // Fichiers d'en-têtes pour OpenGL et GLUT
 #ifdef __APPLE__
@@ -130,6 +133,7 @@ GLvoid redimensionner(int w, int h);
 
 // Déclaration d'autres fonctions
 void drawOctave();
+void playKey(int key);
 
 // Texture
 GLuint textureID = 0;
@@ -265,7 +269,7 @@ GLvoid clavier(unsigned char touche, int x, int y) {
         
     case 'q':
         downKey = 1;
-        PlaySound(TEXT("mywavsound.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        //PlaySound(TEXT("C.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 's':
         downKey = 2;
@@ -490,13 +494,14 @@ void drawOctave() {
     }
 }
 
+void playKey(int key) {
+    //PlaySound(TEXT("E:\P1RV\PianoVirtuel\PianoSounds\C.wav"), NULL, SND_FILENAME | SND_ASYNC);
+    //LPCSTR const Sound_File_Open = "open C:\\Users\\xxx\\Desktop\\nyan-clipped.mp3 type mpegvideo alias Current_Sound_Command";
+    //LPCSTR const Sound_File_Open = "open E:\\P1RV\\PianoVirtuel\\PianoSounds\\G.wav";
 
+    //MCIERROR open = mciSendString(Sound_File_Open, NULL, 0, NULL);
 
-int main() {
-    //PlaySound(TEXT("mywavsound.wav"), NULL, SND_FILENAME); - My erroring code
-    PlaySound(TEXT("mywavsound.wav"), NULL, SND_FILENAME | SND_ASYNC);// - the correct code
+    //MCIERROR play = mciSendString("play Current_Sound_Command repeat", NULL, 0, NULL);
 
-    int test = 0;
-    cin >> test;
-    return 0;
+    //system("pause");
 }
