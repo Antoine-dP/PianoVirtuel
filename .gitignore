@@ -1,4 +1,2 @@
-
-
-# ignore debug folder
-Debug/*
+PianoVirtuel/Debug/
+.vs/
