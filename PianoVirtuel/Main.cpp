@@ -132,6 +132,7 @@ GLboolean alpha = false;
 
 
 
+
 // Definition de la fonction d'affichage
 GLvoid affichage() {
 
