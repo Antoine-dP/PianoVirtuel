@@ -9,6 +9,7 @@
 #include "Windows.h"
 #include <iostream>
 #include <stdio.h>
+#include <vector>
 
 #include <mmsystem.h>
 #include <conio.h>
@@ -56,14 +57,30 @@ vertex cube[8] = {
    { 0.5f,-0.5f,-0.5f,1.0f,1.0f,1.0f}
 };
 
+GLfloat halfWidthW = 0.25f;
+GLfloat halfLengthW = 1.0f;
+GLfloat halfWidthB = 0.58f * halfWidthW;
+GLfloat halfLengthB = 0.6f * halfLengthW;
+
+// 10% gap between keys :
+GLfloat gap = 0.1;
+
+
 vertex toucheBlanche[4] = {
-   {-0.25f, 0.0f,-1.0f,1.0f,1.0f,1.0f},
-   { 0.25f, 0.0f,-1.0f,1.0f,1.0f,1.0f},
-   { 0.25f, 0.0f, 1.0f,1.0f,1.0f,1.0f},
-   {-0.25f, 0.0f, 1.0f,1.0f,1.0f,1.0f}
+   {-halfWidthW, 0.0f,-halfLengthW,1.0f,1.0f,1.0f},
+   { halfWidthW, 0.0f,-halfLengthW,1.0f,1.0f,1.0f},
+   { halfWidthW, 0.0f, halfLengthW,1.0f,1.0f,1.0f},
+   {-halfWidthW, 0.0f, halfLengthW,1.0f,1.0f,1.0f}
 };
 
+vertex toucheNoire[4] = {
+   {-halfWidthB, 0.1f,-halfLengthB,1.0f,1.0f,1.0f},
+   { halfWidthB, 0.1f,-halfLengthB,1.0f,1.0f,1.0f},
+   { halfWidthB, 0.1f, halfLengthB,1.0f,1.0f,1.0f},
+   {-halfWidthB, 0.1f, halfLengthB,1.0f,1.0f,1.0f}
+};
 
+char textVect[] = "QSDFJKLMZEUIO";
 
 
 vertex cubeBlanc[8] = {
@@ -105,7 +122,6 @@ textureCoord faceTexcoord[6][4] = {
 
 // Quelques variables globales (c'est pas bien)
 GLfloat pointSize = 1.0f;
-GLint numOfKeys = 8;
 GLint downKey = 0;
 
 // Rotations autour de X et Y
@@ -133,7 +149,10 @@ GLvoid redimensionner(int w, int h);
 
 // Déclaration d'autres fonctions
 void drawOctave();
+void drawOctave_White();
+void drawOctave_Black();
 void playKey(int key);
+void displayText(char text[], float x, float y, float z, bool black);
 
 // Texture
 GLuint textureID = 0;
@@ -214,7 +233,7 @@ GLvoid affichage() {
     //for (int i = 0; i < 4; i++)
     //{
     //    //glColor3f(toucheBlanche[i].r, toucheBlanche[i].g, toucheBlanche[i].b);
-    //    glVertex3f(toucheBlanche[i].x + (i + (1-numOfKeys)/2) * 0.55f , toucheBlanche[i].y, toucheBlanche[i].z);
+    //    glVertex3f(toucheBlanche[i].x + (i + (1-octaveSize)/2) * 0.55f , toucheBlanche[i].y, toucheBlanche[i].z);
     //}
     //glEnd();
     //glBegin(GL_QUADS);
@@ -292,6 +311,21 @@ GLvoid clavier(unsigned char touche, int x, int y) {
     case 'm':
         downKey = 8;
         break;
+    case 'z':
+        downKey = 9;
+        break;
+    case 'e':
+        downKey = 10;
+        break;
+    case 'u':
+        downKey = 11;
+        break;
+    case 'i':
+        downKey = 12;
+        break;
+    case 'o':
+        downKey = 13;
+        break;
 
     case '+':
         // Augmenter la taille des sommets affiches
@@ -342,6 +376,11 @@ GLvoid clavierUP(unsigned char touche, int x, int y) {
     case 'k':
     case 'l':
     case 'm':
+    case 'z':
+    case 'e':
+    case 'u':
+    case 'i':
+    case 'o':
         downKey = 0;
         break;
     }
@@ -424,7 +463,7 @@ int main(int argc, char* argv[])
     // Taille initiale de la fenetre GLUT
     glutInitWindowSize(windowW, windowH);
     // Creation de la fenetre GLUT
-    glutCreateWindow("Cube3D");
+    glutCreateWindow("Piano3D");
 
     // Définition de la couleur d'effacement du framebuffer
     glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
@@ -459,39 +498,95 @@ int main(int argc, char* argv[])
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void drawOctave() {
-    glColor3f(1.0f, 1.0f, 1.0f);
-    if (numOfKeys % 2 == 0) {
-        for (int j = 0; j < numOfKeys; j++)
+void drawOctave(){
+    drawOctave_White();
+    drawOctave_Black();
+}
+
+void drawOctave_White() {
+
+    // 8 keys in an octave
+    GLint octaveSize = 8;
+
+    //char *textVect[13] = {"Q" ,"S" ,"D" ,"F" ,"J" ,"K" ,"L" ,"M" ,"Z" ,"E" ,"U" ,"I" ,"O"};
+      
+    
+    // If even number of keys (always used for drawing octave)
+    if (octaveSize % 2 == 0) {
+        // Draw 8 keys in octave
+        for (int j = 0; j < octaveSize; j++)
         {
             glBegin(GL_QUADS);
-            if (downKey == j+1)
+            // If key is down, change color
+            if (downKey == j + 1)
             {
-                glColor3f(0.0f, 0.0f, 0.5f);
+                glColor3f(79.0f / 255.0, 194.0f / 255.0, 170.0f / 255.0);
             }
             else
             {
                 glColor3f(1.0f, 1.0f, 1.0f);
             }
+            // Draw key
             for (int i = 0; i < 4; i++)
             {
-                
-                glVertex3f(toucheBlanche[i].x + (j - numOfKeys / 2 + 0.5f) * 0.55f, toucheBlanche[i].y, toucheBlanche[i].z);
+                glVertex3f(toucheBlanche[i].x + (j - octaveSize / 2 + (2 * halfWidthW)) * (2*halfWidthW) * (1+gap), toucheBlanche[i].y, toucheBlanche[i].z);
             }
             glEnd();
+
+            // Display keyboard letter on key
+            char tempText[] = { textVect[j] };
+            displayText(tempText, (j - octaveSize / 2 + (2 * halfWidthW)) * (2 * halfWidthW) * (1 + gap/2), 0.2, -toucheBlanche[0].z / 2, true);
+            
+            //displayText(tempText, 0, 1, 0, true);
         }
     }
+    // If odd number of keys (not used for drawing octave)
     else {
-        for (int j = 0; j < numOfKeys; j++)
+        for (int j = 0; j < octaveSize; j++)
         {
             glBegin(GL_QUADS);
             for (int i = 0; i < 4; i++)
             {
-                glVertex3f(toucheBlanche[i].x + (j + (1 - numOfKeys) / 2) * 0.55f, toucheBlanche[i].y, toucheBlanche[i].z);
+                glVertex3f(toucheBlanche[i].x + (j + (1 - octaveSize) / 2) * (2*halfWidthW) * (1+gap), toucheBlanche[i].y, toucheBlanche[i].z);
             }
             glEnd();
         }
     }
+}
+
+void drawOctave_Black() {
+    // 8 keys in an octave
+    GLint octaveSizeB = 5;
+
+    vertex posTouchesNoires[5] = { {-3}, {-2}, {0}, {1}, {2} };
+    
+    for (int j = 0; j < octaveSizeB; j++)
+    {
+        glBegin(GL_QUADS);
+        // If key is down, change color
+        if (downKey == j + 9)
+        {
+            glColor3f(79.0f / 255.0, 194.0f / 255.0, 170.0f / 255.0);
+        }
+        else
+        {
+            // Default color : black
+            glColor3f(0.0f, 0.0f, 0.0f);
+        }
+        // Draw key
+        for (int i = 0; i < 4; i++)
+        {
+            glVertex3f(toucheNoire[i].x + posTouchesNoires[j].x * (2 * halfWidthW ) * (1 + gap), toucheNoire[i].y, toucheNoire[i].z + halfLengthB - halfLengthW);
+        }
+        glEnd();
+
+        char tempText[] = { textVect[j+8] };
+        displayText(tempText, posTouchesNoires[j].x * (2 * halfWidthW) * (1 + gap/2), toucheNoire[0].y + 0.2, halfLengthB - halfLengthW, false);
+    }
+
+        
+    
+
 }
 
 void playKey(int key) {
@@ -505,3 +600,30 @@ void playKey(int key) {
 
     //system("pause");
 }
+
+void displayText(char text[], float x, float y, float z, bool black) {
+    
+    if (black) {
+        glColor3f(0.0, 0.0, 0.0);
+    }
+    else {
+        glColor3f(1.0, 1.0, 1.0);
+    }
+    glRasterPos3f(x, y, z);
+
+    for (char* c = text; *c != '\0'; c++) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);  // Updates the position
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
