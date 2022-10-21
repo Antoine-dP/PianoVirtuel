@@ -40,7 +40,7 @@ void BlackKey::show() {
     //char tempText[] = { keyboardLetter };
     //char tempText[] = { ' ' };
     //displayText(tempText, position.x, position.y + 0.2, position.z, false);
-    //displayText(keyboardLetter, position.x, position.y + 0.2, position.z, false);
+    displayText(keyboardLetter, position.x, position.y + 0.2, position.z, false);
     //displayText(' ', position.x, position.y + 0.2, position.z, false);
 }
 
@@ -53,10 +53,11 @@ void BlackKey::displayText(char text, float x, float y, float z, bool black) {
         glColor3f(1.0, 1.0, 1.0);
     }
     glRasterPos3f(x, y, z);
-    char tempText[] = { text };
+    char tempText[] = { text};
     //char tempText[] = { ' '};
     for (char* c = tempText; *c != '\0'; c++) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);  // Updates the position
+        break;
     }
 
 }

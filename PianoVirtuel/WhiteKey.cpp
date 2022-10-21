@@ -45,7 +45,7 @@ void WhiteKey::show() {
     //char tempText[] = { keyboardLetter };
     //char tempText[] = { ' ' };
     //displayText(tempText, position.x, position.y + 0.2, position.z, true);
-    //displayText(keyboardLetter, position.x, position.y + 0.2, position.z, true);
+    displayText(keyboardLetter, position.x, position.y + 0.2, position.z, true);
     //displayText(' ', position.x, position.y + 0.2, position.z, true);
 }
 
@@ -59,9 +59,11 @@ void WhiteKey::displayText(char text, float x, float y, float z, bool black) {
     }
     glRasterPos3f(x, y, z);
     char tempText[] = { text };
+    cout << tempText << endl;
     //char tempText[] = { ' '};
     for (char* c = tempText; *c != '\0'; c++) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);  // Updates the position
+        break;
     }
 
 }
