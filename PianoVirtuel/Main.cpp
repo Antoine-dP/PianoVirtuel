@@ -10,6 +10,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <vector>
+#include "Vertex.h"
 
 #include <mmsystem.h>
 #include <conio.h>
@@ -33,16 +34,6 @@ using namespace std;
 // Structure de données simpliste
 // pour stocker un sommet 3D et 
 // ses informations de couleur
-
-typedef struct {
-    float x;
-    float y;
-    float z;
-    float r;
-    float g;
-    float b;
-    //float a;
-} vertex;
 
 
 // Création des sommets du cube
