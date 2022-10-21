@@ -11,6 +11,9 @@
 #include <stdio.h>
 #include <vector>
 #include "Vertex.h"
+#include "Key.h"
+#include "WhiteKey.h"
+#include "BlackKey.h"
 
 #include <mmsystem.h>
 #include <conio.h>
@@ -71,44 +74,39 @@ vertex toucheNoire[4] = {
    {-halfWidthB, 0.1f, halfLengthB,1.0f,1.0f,1.0f}
 };
 
+vertex touchesBlanches[8] = {
+   {(-4 + (2 * halfWidthW)) * (2 * halfWidthW) * (1 + gap), 0.0f, 0.0f},
+   {(-3 + (2 * halfWidthW)) * (2 * halfWidthW) * (1 + gap), 0.0f, 0.0f},
+   {(-2 + (2 * halfWidthW)) * (2 * halfWidthW) * (1 + gap), 0.0f, 0.0f},
+   {(-1 + (2 * halfWidthW)) * (2 * halfWidthW) * (1 + gap), 0.0f, 0.0f},
+   {( 0 + (2 * halfWidthW)) * (2 * halfWidthW) * (1 + gap), 0.0f, 0.0f},
+   {( 1 + (2 * halfWidthW)) * (2 * halfWidthW) * (1 + gap), 0.0f, 0.0f},
+   {( 2 + (2 * halfWidthW)) * (2 * halfWidthW) * (1 + gap), 0.0f, 0.0f},
+   {( 3 + (2 * halfWidthW)) * (2 * halfWidthW) * (1 + gap), 0.0f, 0.0f}
+};
+vertex touchesNoires[5] = {
+   {-3 * (2 * halfWidthW) * (1 + gap), 0.1f, (halfLengthB - halfLengthW)},
+   {-2 * (2 * halfWidthW) * (1 + gap), 0.1f, (halfLengthB - halfLengthW)},
+   { 0 * (2 * halfWidthW) * (1 + gap), 0.1f, (halfLengthB - halfLengthW)},
+   { 1 * (2 * halfWidthW) * (1 + gap), 0.1f, (halfLengthB - halfLengthW)},
+   { 2 * (2 * halfWidthW) * (1 + gap), 0.1f, (halfLengthB - halfLengthW)}
+};
+
 char textVect[] = "QSDFJKLMZEUIO";
 
-
-vertex cubeBlanc[8] = {
-   {-0.5f,-0.5f, 0.5f,1.0f,1.0f,1.0f},
-   {-0.5f, 0.5f, 0.5f,1.0f,1.0f,1.0f},
-   { 0.5f, 0.5f, 0.5f,1.0f,1.0f,1.0f},
-   { 0.5f,-0.5f, 0.5f,1.0f,1.0f,1.0f},
-   {-0.5f,-0.5f,-0.5f,1.0f,1.0f,1.0f},
-   {-0.5f, 0.5f,-0.5f,1.0f,1.0f,1.0f},
-   { 0.5f, 0.5f,-0.5f,1.0f,1.0f,1.0f},
-   { 0.5f,-0.5f,-0.5f,1.0f,1.0f,1.0f}
-};
+// posTouchesNoires[j].x * (2 * halfWidthW) * (1 + gap), toucheNoire[i].y, toucheNoire[i].z + halfLengthB - halfLengthW)
 
 // Création des faces du cube
-int face[6][4] = {
-   {0,1,2,3},
-   {3,2,6,7},
-   {4,5,6,7},
-   {0,1,5,4},
-   {1,5,6,2},
-   {0,4,7,3}
-};
+//int face[6][4] = {
+//   {0,1,2,3},
+//   {3,2,6,7},
+//   {4,5,6,7},
+//   {0,1,5,4},
+//   {1,5,6,2},
+//   {0,4,7,3}
+//};
 
-// Indice des coordonnees de texture
-typedef struct {
-    float s;
-    float t;
-} textureCoord;
 
-textureCoord faceTexcoord[6][4] = {
-   { {0.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f} }, // premiere face
-   { {0.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f} }, // seconde face
-   { {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, 0.0f} }, // troisieme face
-   { {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, 0.0f} }, // quatrieme face
-   { {0.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f} }, // cinquieme face
-   { {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, 0.0f} } // sixieme face
-};
 
 
 // Quelques variables globales (c'est pas bien)
@@ -144,6 +142,9 @@ void drawOctave_White();
 void drawOctave_Black();
 void playKey(int key);
 void displayText(char text[], float x, float y, float z, bool black);
+void displayText(char text, float x, float y, float z, bool black);
+void initOctaveVect();
+void pressKey(char letter, bool down);
 
 // Texture
 GLuint textureID = 0;
@@ -162,6 +163,8 @@ GLboolean colorCube = false;
 GLint texEnvMode = 1;
 GLboolean alpha = false;
 
+vector<Key*> octaveVect;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,13 +178,13 @@ GLvoid affichage() {
 
     glMatrixMode(GL_MODELVIEW);
 
-    glEnable(GL_TEXTURE_2D);
+    //glEnable(GL_TEXTURE_2D);
 
 
     // Animation du cube!
-    glLoadIdentity();
-    glRotatef(-angleY, 1.0f, 0.0f, 0.0f);
-    glRotatef(-angleX, 0.0f, 1.0f, 0.0f);
+    //glLoadIdentity();
+    //glRotatef(-angleY, 1.0f, 0.0f, 0.0f);
+    //glRotatef(-angleX, 0.0f, 1.0f, 0.0f);
 
     // Dessin d'un cube colore
     // face par face
@@ -217,7 +220,12 @@ GLvoid affichage() {
 
 
     // Draw octave (only white keys)
-    drawOctave();
+    // drawOctave();
+    for (int i = 0; i < octaveVect.size(); i++)
+    {
+        (*octaveVect[i]).show();
+    }
+    
     
 
     //glBegin(GL_QUADS);
@@ -278,43 +286,63 @@ GLvoid clavier(unsigned char touche, int x, int y) {
     //    break;
         
     case 'q':
+    case 'Q':
         downKey = 1;
-        //PlaySound(TEXT("C.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        pressKey('Q', true);
+        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\C.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 's':
+        pressKey('S', true);
         downKey = 2;
+        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\D.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'd':
+        pressKey('D', true);
         downKey = 3;
+        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\E.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'f':
+        pressKey('F', true);
         downKey = 4;
+        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\F.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'j':
+        pressKey('J', true);
         downKey = 5;
+        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\G.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'k':
+        pressKey('K', true);
         downKey = 6;
+        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\A.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'l':
+        pressKey('L', true);
         downKey = 7;
+        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\B.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'm':
+        pressKey('M', true);
         downKey = 8;
         break;
     case 'z':
+        pressKey('Z', true);
         downKey = 9;
         break;
     case 'e':
+        pressKey('E', true);
         downKey = 10;
         break;
     case 'u':
+        pressKey('U', true);
         downKey = 11;
         break;
     case 'i':
+        pressKey('I', true);
         downKey = 12;
         break;
     case 'o':
+        pressKey('O', true);
         downKey = 13;
         break;
 
@@ -360,18 +388,31 @@ GLvoid clavierUP(unsigned char touche, int x, int y) {
     switch (touche) {
 
     case 'q':
+        pressKey('Q', false);
     case 's':
+        pressKey('S', false);
     case 'd':
+        pressKey('D', false);
     case 'f':
+        pressKey('F', false);
     case 'j':
+        pressKey('J', false);
     case 'k':
+        pressKey('K', false);
     case 'l':
+        pressKey('L', false);
     case 'm':
+        pressKey('M', false);
     case 'z':
+        pressKey('Z', false);
     case 'e':
+        pressKey('E', false);
     case 'u':
+        pressKey('U', false);
     case 'i':
+        pressKey('I', false);
     case 'o':
+        pressKey('O', false);
         downKey = 0;
         break;
     }
@@ -479,6 +520,8 @@ int main(int argc, char* argv[])
     glutMotionFunc(deplacementSouris);
     glutReshapeFunc(redimensionner);
 
+    initOctaveVect();
+
     // Lancement de la boucle infinie GLUT
     glutMainLoop();
 
@@ -489,6 +532,22 @@ int main(int argc, char* argv[])
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void initOctaveVect() {
+    Key* keyPtr = nullptr;
+
+    // White keys
+    for (int i = 0; i < 8; i++)
+    {
+        keyPtr = new WhiteKey(touchesBlanches[i].x, touchesBlanches[i].y, touchesBlanches[i].z, textVect[i]);
+        octaveVect.push_back(keyPtr);
+    }
+    for (int i = 0; i < 5; i++)
+    {
+        keyPtr = new BlackKey(touchesNoires[i].x, touchesNoires[i].y, touchesNoires[i].z, textVect[i+8]);
+        octaveVect.push_back(keyPtr);
+    }
+}
+
 void drawOctave(){
     drawOctave_White();
     drawOctave_Black();
@@ -498,9 +557,6 @@ void drawOctave_White() {
 
     // 8 keys in an octave
     GLint octaveSize = 8;
-
-    //char *textVect[13] = {"Q" ,"S" ,"D" ,"F" ,"J" ,"K" ,"L" ,"M" ,"Z" ,"E" ,"U" ,"I" ,"O"};
-      
     
     // If even number of keys (always used for drawing octave)
     if (octaveSize % 2 == 0) {
@@ -607,8 +663,34 @@ void displayText(char text[], float x, float y, float z, bool black) {
     }
     
 }
+void displayText(char text, float x, float y, float z, bool black) {
 
+    if (black) {
+        glColor3f(0.0, 0.0, 0.0);
+    }
+    else {
+        glColor3f(1.0, 1.0, 1.0);
+    }
+    glRasterPos3f(x, y, z);
+    char tempText[] = {text};
+    for (char* c = tempText; *c != '\0'; c++) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);  // Updates the position
+    }
 
+}
+
+void pressKey(char letter, bool down) {
+
+    char c = (char)toupper(letter);
+
+    for (int i = 0; i < octaveVect.size(); i++)
+    {
+        if ((*octaveVect[i]).getLetter() == c) {
+            (*octaveVect[i]).press(down);
+            return;
+        }
+    }
+}
 
 
 

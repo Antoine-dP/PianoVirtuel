@@ -25,12 +25,17 @@
 
 using namespace std;
 
+
 class Key {
+protected:
 	int type;
 	vertex position;
 	bool isPressed;
+	char keyboardLetter;
 public:
-	Key(int keyType, float x, float y, float z);
+	Key();
+	Key(int keyType, float x, float y, float z, char letter);
 	void press(bool isDown);
-	void show();
+	virtual void show() = 0;
+	char getLetter() { return keyboardLetter; };
 };
