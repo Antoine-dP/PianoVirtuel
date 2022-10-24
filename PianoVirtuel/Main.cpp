@@ -102,12 +102,6 @@ char textVect[] = "QSDFJKLMZEUIO";
 GLfloat pointSize = 1.0f;
 GLint downKey = 0;
 
-// Rotations autour de X et Y
-GLfloat angleX = 0.0f;
-GLfloat angleY = 0.0f;
-GLint oldX = 0;
-GLint oldY = 0;
-GLboolean boutonClick = false;
 
 // Taille de la fenêtre
 int windowW = 640*2;
@@ -276,63 +270,50 @@ GLvoid clavier(unsigned char touche, int x, int y) {
         
     case 'q':
     case 'Q':
-        downKey = 1;
         pressKey('Q', true);
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\C.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 's':
         pressKey('S', true);
-        downKey = 2;
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\D.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'd':
         pressKey('D', true);
-        downKey = 3;
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\E.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'f':
         pressKey('F', true);
-        downKey = 4;
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\F.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'j':
         pressKey('J', true);
-        downKey = 5;
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\G.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'k':
         pressKey('K', true);
-        downKey = 6;
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\A.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'l':
         pressKey('L', true);
-        downKey = 7;
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\B.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'm':
         pressKey('M', true);
-        downKey = 8;
         break;
     case 'z':
         pressKey('Z', true);
-        downKey = 9;
         break;
     case 'e':
         pressKey('E', true);
-        downKey = 10;
         break;
     case 'u':
         pressKey('U', true);
-        downKey = 11;
         break;
     case 'i':
         pressKey('I', true);
-        downKey = 12;
         break;
     case 'o':
         pressKey('O', true);
-        downKey = 13;
         break;
 
     case '+':
@@ -378,31 +359,42 @@ GLvoid clavierUP(unsigned char touche, int x, int y) {
 
     case 'q':
         pressKey('Q', false);
+        break;
     case 's':
         pressKey('S', false);
+        break;
     case 'd':
         pressKey('D', false);
+        break;
     case 'f':
         pressKey('F', false);
+        break;
     case 'j':
         pressKey('J', false);
+        break;
     case 'k':
         pressKey('K', false);
+        break;
     case 'l':
         pressKey('L', false);
+        break;
     case 'm':
         pressKey('M', false);
+        break;
     case 'z':
         pressKey('Z', false);
+        break;
     case 'e':
         pressKey('E', false);
+        break;
     case 'u':
         pressKey('U', false);
+        break;
     case 'i':
         pressKey('I', false);
+        break;
     case 'o':
         pressKey('O', false);
-        downKey = 0;
         break;
     }
     glutPostRedisplay();
@@ -425,20 +417,7 @@ GLvoid souris(int bouton, int etat, int x, int y) {
 }
 
 GLvoid deplacementSouris(int x, int y) {
-    // si le bouton gauche est appuye et qu'on se deplace
-    // alors on doit modifier les angles de rotations du cube
-    // en fonction de la derniere position de la souris 
-    // et de sa position actuelle
-    if (boutonClick) {
-        angleX += (x - oldX);
-        angleY += (y - oldY);
-        // Appeler le re-affichage de la scene OpenGL
-        glutPostRedisplay();
-    }
 
-    // Mise a jour des anciennes positions de la souris en X et Y
-    oldX = x;
-    oldY = y;
 }
 
 // Callback de redimensionnement de la fenêtre
