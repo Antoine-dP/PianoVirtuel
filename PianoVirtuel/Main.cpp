@@ -85,11 +85,11 @@ vertex touchesBlanches[8] = {
    {( 3 + (2 * halfWidthW)) * (2 * halfWidthW) * (1 + gap), 0.0f, 0.0f}
 };
 vertex touchesNoires[5] = {
-   {-3 * (2 * halfWidthW) * (1 + gap), 0.1f, (halfLengthB - halfLengthW)},
-   {-2 * (2 * halfWidthW) * (1 + gap), 0.1f, (halfLengthB - halfLengthW)},
-   { 0 * (2 * halfWidthW) * (1 + gap), 0.1f, (halfLengthB - halfLengthW)},
-   { 1 * (2 * halfWidthW) * (1 + gap), 0.1f, (halfLengthB - halfLengthW)},
-   { 2 * (2 * halfWidthW) * (1 + gap), 0.1f, (halfLengthB - halfLengthW)}
+   {-3 * (2 * halfWidthW) * (1 + gap), 0.2f, (halfLengthB - halfLengthW)},
+   {-2 * (2 * halfWidthW) * (1 + gap), 0.2f, (halfLengthB - halfLengthW)},
+   { 0 * (2 * halfWidthW) * (1 + gap), 0.2f, (halfLengthB - halfLengthW)},
+   { 1 * (2 * halfWidthW) * (1 + gap), 0.2f, (halfLengthB - halfLengthW)},
+   { 2 * (2 * halfWidthW) * (1 + gap), 0.2f, (halfLengthB - halfLengthW)}
 };
 
 char textVect[] = "QSDFJKLMZEUIO";

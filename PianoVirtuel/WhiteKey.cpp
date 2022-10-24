@@ -65,6 +65,7 @@ void WhiteKey::show() {
 
             // Draw faces
             glBegin(GL_QUADS);
+            // Make blue
             glColor3f(79.0f / 255.0, 194.0f / 255.0, 170.0f / 255.0);
             for (int j = 0; j < 4; j++)
             {
@@ -73,6 +74,7 @@ void WhiteKey::show() {
                     toucheBlanche[face[i][j]][2] * L / 2 + position.z);
             }
             glEnd();
+
             // Undo rotation for others
             glTranslatef(-position.x, -position.y, -position.z - L/2);
             glRotatef(-rotateAngle, 1, 0, 0);
@@ -80,6 +82,7 @@ void WhiteKey::show() {
         }
         else
         {
+            // if not pressed, just draw in white
             glBegin(GL_QUADS);
             glColor3f(1.0f, 1.0f, 1.0f);
             for (int j = 0; j < 4; j++)
