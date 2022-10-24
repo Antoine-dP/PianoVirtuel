@@ -14,5 +14,4 @@ public:
 	//WhiteKey(int keyType, float x, float y, float z, char letter);
 	void show();
 	void displayText(char text, float x, float y, float z, bool black);
-	void displayText(char text[], float x, float y, float z, bool black);
 };

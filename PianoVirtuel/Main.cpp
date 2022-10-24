@@ -477,7 +477,8 @@ GLvoid redimensionner(int w, int h) {
     gluPerspective(focale, ratio, _near, _far);
 
     // Placement de la caméra
-    gluLookAt(0, 5, 0.0001f, 0, 0, 0, 0, 1, 0);
+    //gluLookAt(0, 5, 0.0001f, 0, 0, 0, 0, 1, 0);
+    gluLookAt(0, 5, 2.0f, 0, 0, 0, 0, 1, 0);
 
     // Retourne a la pile modelview
     glMatrixMode(GL_MODELVIEW);
@@ -502,6 +503,7 @@ int main(int argc, char* argv[])
 
     // Initialement on desactive le Z-buffer
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LINE_SMOOTH);
 
 
     // Correction de la perspective
