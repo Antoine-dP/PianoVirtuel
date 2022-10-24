@@ -94,17 +94,6 @@ vertex touchesNoires[5] = {
 
 char textVect[] = "QSDFJKLMZEUIO";
 
-// posTouchesNoires[j].x * (2 * halfWidthW) * (1 + gap), toucheNoire[i].y, toucheNoire[i].z + halfLengthB - halfLengthW)
-
-// Création des faces du cube
-//int face[6][4] = {
-//   {0,1,2,3},
-//   {3,2,6,7},
-//   {4,5,6,7},
-//   {0,1,5,4},
-//   {1,5,6,2},
-//   {0,4,7,3}
-//};
 
 
 

@@ -1,5 +1,6 @@
 #include "Key.h"
 
+
 Key::Key(int keyType, float x, float y, float z, char letter) {
 	position = { x,y,z };
     isPressed = false;

@@ -50,18 +50,15 @@ void WhiteKey::show() {
     //glVertex3f(-W / 2 + position.x, position.y,  L / 2 + position.z);
     //glEnd();
 
-
-    // FULL CUBE (6 SIDES)
-    for (int i = 0; i < 6; i++)
+    if (isPressed)
     {
-        // Draw face
-        
-        if (isPressed)
+        for (int i = 0; i < 6; i++)
         {
+            // Draw face
             // Rotate key if it's pressed
-            glTranslatef(-position.x, -position.y, -position.z - L/2);
+            glTranslatef(-position.x, -position.y, -position.z - L / 2);
             glRotatef(rotateAngle, 1, 0, 0);
-            glTranslatef(position.x, position.y, position.z + L/2);
+            glTranslatef(position.x, position.y, position.z + L / 2);
 
             // Draw faces
             glBegin(GL_QUADS);
@@ -76,11 +73,14 @@ void WhiteKey::show() {
             glEnd();
 
             // Undo rotation for others
-            glTranslatef(-position.x, -position.y, -position.z - L/2);
+            glTranslatef(-position.x, -position.y, -position.z - L / 2);
             glRotatef(-rotateAngle, 1, 0, 0);
-            glTranslatef(position.x, position.y, position.z + L/2);
+            glTranslatef(position.x, position.y, position.z + L / 2);
         }
-        else
+    }
+    else
+    {
+        for (int i = 0; i < 6; i++)
         {
             // if not pressed, just draw in white
             glBegin(GL_QUADS);
@@ -91,23 +91,8 @@ void WhiteKey::show() {
                     toucheBlanche[face[i][j]][1] * H + position.y,
                     toucheBlanche[face[i][j]][2] * L / 2 + position.z);
             }
-            glEnd();
+            glEnd();  
         }
-        
-        // Draw edges
-        //for (int j = 0; j < 4; j++)
-        //{
-        //    glLineWidth(2.0f);
-        //    glBegin(GL_LINES);
-        //    glColor3f(0.0f, 0.0f, 0.0f);
-        //    glVertex3f(toucheBlanche[face[i][j]][0] * W / 2 + position.x,
-        //        toucheBlanche[face[i][j]][1] * H + position.y,
-        //        toucheBlanche[face[i][j]][2] * L / 2 + position.z);
-        //    glVertex3f(toucheBlanche[face[i][(j+1)%4]][0] * W / 2 + position.x,
-        //        toucheBlanche[face[i][j]][1] * H + position.y,
-        //        toucheBlanche[face[i][j]][2] * L / 2 + position.z);
-        //    glEnd();
-        //}
     }
 
     displayText(keyboardLetter, position.x, position.y + 0.001, position.z + L/4, true);

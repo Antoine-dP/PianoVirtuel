@@ -29,7 +29,6 @@ BlackKey::BlackKey(float x, float y, float z, char letter) {
     isPressed = false;
     type = 0;
     keyboardLetter = letter;
-    char testText[] = { '*' };
 }
 
 void BlackKey::show() {
@@ -52,16 +51,11 @@ void BlackKey::show() {
     //glVertex3f(-W / 2 + position.x, position.y, L / 2 + position.z);
     //glEnd();
 
-
-    /////////////////////////////////////
-
-        // FULL CUBE (6 SIDES)
-    for (int i = 0; i < 6; i++)
+    if (isPressed)
     {
-        // Draw face
-
-        if (isPressed)
+        for (int i = 0; i < 6; i++)
         {
+            // Draw face
             // Rotate key if it's pressed
             glTranslatef(-position.x, -position.y, -position.z - L);
             glRotatef(rotateAngleBlack, 1, 0, 0);
@@ -84,9 +78,13 @@ void BlackKey::show() {
             glRotatef(-rotateAngleBlack, 1, 0, 0);
             glTranslatef(position.x, position.y, position.z + L);
         }
-        else
+    }
+    else {
+        
+        for (int i = 0; i < 6; i++)
         {
-            // if not pressed, just draw in white
+            // Draw face
+            // if not pressed, just draw in black
             glBegin(GL_QUADS);
             glColor3f(0.0f, 0.0f, 0.0f);
             for (int j = 0; j < 4; j++)
@@ -97,7 +95,6 @@ void BlackKey::show() {
             }
             glEnd();
         }
-
     }
 
     displayText(keyboardLetter, position.x, position.y + 0.001, position.z, false);
