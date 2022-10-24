@@ -129,24 +129,10 @@ void displayText(char text, float x, float y, float z, bool black);
 void initOctaveVect();
 void pressKey(char letter, bool down);
 
-// Texture
-GLuint textureID = 0;
-
-// TEXTURE
-unsigned long x;
-unsigned long y;
-unsigned short int bpp; //bits per pixels   unsigned short int
-GLbyte* texData;             //the data of the image
-GLuint ID;                //the id ogl gives it
-unsigned long size;     //length of the file
-int channels;      //the channels of the image 3 = RGA 4 = RGBA
-GLuint type;
-
-GLboolean colorCube = false;
-GLint texEnvMode = 1;
-GLboolean alpha = false;
-
 vector<Key*> octaveVect;
+
+// Shader stuff
+//UCreateShaders
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -339,21 +325,6 @@ GLvoid clavier(unsigned char touche, int x, int y) {
         if (pointSize <= 0.0f)
             pointSize = 1.0f;
         glPointSize(pointSize);
-        break;
-
-        // Couleur ou non
-    case 'c':
-        colorCube = !colorCube;
-        break;
-
-
-    case 't':
-        texEnvMode = (texEnvMode + 1) % 3;
-        printf("texEnvMode : %d\n", texEnvMode);
-        break;
-
-    case 'a':
-        alpha = !alpha;
         break;
 
     //case 'q': // quitter
