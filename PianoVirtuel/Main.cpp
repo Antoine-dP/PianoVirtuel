@@ -274,45 +274,57 @@ GLvoid clavier(unsigned char touche, int x, int y) {
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\C.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 's':
+    case'S':
         pressKey('S', true);
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\D.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'd':
+    case 'D':
         pressKey('D', true);
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\E.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'f':
+    case 'F':
         pressKey('F', true);
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\F.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'j':
+    case 'J':
         pressKey('J', true);
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\G.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'k':
+    case 'K':
         pressKey('K', true);
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\A.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'l':
+    case 'L':
         pressKey('L', true);
         PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\B.wav"), NULL, SND_FILENAME | SND_ASYNC);
         break;
     case 'm':
+    case 'M':
         pressKey('M', true);
         break;
     case 'z':
+    case 'Z':
         pressKey('Z', true);
         break;
     case 'e':
+    case 'E':
         pressKey('E', true);
         break;
     case 'u':
+    case 'U':
         pressKey('U', true);
         break;
     case 'i':
+    case 'I':
         pressKey('I', true);
         break;
     case 'o':
+    case 'O':
         pressKey('O', true);
         break;
 
@@ -358,42 +370,55 @@ GLvoid clavierUP(unsigned char touche, int x, int y) {
     switch (touche) {
 
     case 'q':
+    case 'Q':
         pressKey('Q', false);
         break;
     case 's':
+    case 'S':
         pressKey('S', false);
         break;
     case 'd':
+    case 'D':
         pressKey('D', false);
         break;
     case 'f':
+    case 'F':
         pressKey('F', false);
         break;
     case 'j':
+    case 'J':
         pressKey('J', false);
         break;
     case 'k':
+    case 'K':
         pressKey('K', false);
         break;
     case 'l':
+    case 'L':
         pressKey('L', false);
         break;
     case 'm':
+    case 'M':
         pressKey('M', false);
         break;
     case 'z':
+    case 'Z':
         pressKey('Z', false);
         break;
     case 'e':
+    case 'E':
         pressKey('E', false);
         break;
     case 'u':
+    case 'U':
         pressKey('U', false);
         break;
     case 'i':
+    case 'I':
         pressKey('I', false);
         break;
     case 'o':
+    case 'O':
         pressKey('O', false);
         break;
     }
