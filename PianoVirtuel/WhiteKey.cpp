@@ -11,7 +11,7 @@ float toucheBlanche[8][3]{
     {-1.0, -1.0,  1.0}
 };
 
-int face[6][4] = {
+int face[6][7] = {
    {0,1,2,3},
    {3,2,6,7},
    {4,7,6,5},
@@ -20,7 +20,16 @@ int face[6][4] = {
    {0,3,7,4}
 };
 
-float rotateAngle = 7;
+float couleurBlanche[6][3]{
+    {1.0, 1.0, 1.0},
+    {0.8, 0.8, 0.8},
+    {1.0, 1.0, 1.0},
+    {0.8, 0.8, 0.8},
+    {0.6, 0.6, 0.6},
+    {0.6, 0.6, 0.6}
+};
+
+float rotateAngle = 5;
 
 WhiteKey::WhiteKey(float x, float y, float z, char letter) {
     position = { x,y,z };
@@ -63,7 +72,8 @@ void WhiteKey::show() {
             // Draw faces
             glBegin(GL_QUADS);
             // Make blue
-            glColor3f(79.0f / 255.0, 194.0f / 255.0, 170.0f / 255.0);
+            glColor3f(couleurBlanche[i][0] * 79.0f / 255.0, couleurBlanche[i][1] * 194.0f / 255.0, couleurBlanche[i][2] * 170.0f / 255.0);
+            //glColor3f(couleurBlanche[i][0], couleurBlanche[i][1], couleurBlanche[i][2]);
             for (int j = 0; j < 4; j++)
             {
                 glVertex3f(toucheBlanche[face[i][j]][0] * W / 2 + position.x,
@@ -84,7 +94,8 @@ void WhiteKey::show() {
         {
             // if not pressed, just draw in white
             glBegin(GL_QUADS);
-            glColor3f(1.0f, 1.0f, 1.0f);
+            //glColor3f(1.0f, 1.0f, 1.0f);
+            glColor3f(couleurBlanche[i][0], couleurBlanche[i][1], couleurBlanche[i][2]);
             for (int j = 0; j < 4; j++)
             {
                 glVertex3f(toucheBlanche[face[i][j]][0] * W / 2 + position.x,

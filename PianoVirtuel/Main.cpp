@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Centrale Innovation. All rights reserved.
 //
 
-#include "Windows.h"
+//#include "Windows.h"
 #include <iostream>
 #include <stdio.h>
 #include <vector>
@@ -24,10 +24,13 @@
 #include <OpenGL/gl.h>
 #include <GLUT/glut.h>
 #else
+//#define GLFW_INCLUDE_NONE
 #include <GL/gl.h>
-//#include <glut.h>
 #include <GL/glut.h>
 #include <GL/glext.h>
+
+//#include <GLFW/glfw3.h>
+//#include <glad.h>
 #define GL_GLEXT_PROTOTYPES
 
 #endif
