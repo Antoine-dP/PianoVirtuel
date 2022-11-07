@@ -20,24 +20,25 @@ int faceNoire[6][4] = {
    {0,3,7,4}
 };
 
-float couleurNoire[6][3]{
-    {0.20, 0.20, 0.20}, // top
-    {0.10, 0.10, 0.10}, // front
-    {0.20, 0.20, 0.20}, // top
-    {0.10, 0.10, 0.10}, // front
-    {0.00, 0.00, 0.00}, // side
-    {0.00, 0.00, 0.00}  // side
+float couleurNoire[6][4]{
+    {0.20, 0.20, 0.20, 1.0}, // top
+    {0.10, 0.10, 0.10, 1.0}, // front
+    {0.20, 0.20, 0.20, 1.0}, // top
+    {0.10, 0.10, 0.10, 1.0}, // front
+    {0.00, 0.00, 0.00, 1.0}, // side
+    {0.00, 0.00, 0.00, 1.0}  // side
 };
 
 float rotateAngleBlack = 5;
 
 
 
-BlackKey::BlackKey(float x, float y, float z, char letter) {
+BlackKey::BlackKey(float x, float y, float z, char letter, int id_num) {
     position = { x,y,z };
     isPressed = false;
     type = 0;
     keyboardLetter = letter;
+    id = id_num;
 }
 
 void BlackKey::show() {
@@ -90,14 +91,13 @@ void BlackKey::show() {
         }
     }
     else {
-        
         for (int i = 0; i < 6; i++)
         {
             // Draw face
             // if not pressed, just draw in black
             glBegin(GL_QUADS);
             //glColor3f(0.0f, 0.0f, 0.0f);
-            glColor3f(couleurNoire[i][0], couleurNoire[i][1], couleurNoire[i][2]);
+            glColor3f(couleurNoire[i][0] - ((float)id) / 255, couleurNoire[i][1], couleurNoire[i][2]);
             for (int j = 0; j < 4; j++)
             {
                 glVertex3f(toucheNoire[faceNoire[i][j]][0] * W / 2 + position.x,

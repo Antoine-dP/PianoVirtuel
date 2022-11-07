@@ -20,23 +20,24 @@ int face[6][7] = {
    {0,3,7,4}
 };
 
-float couleurBlanche[6][3]{
-    {1.0, 1.0, 1.0},
-    {0.8, 0.8, 0.8},
-    {1.0, 1.0, 1.0},
-    {0.8, 0.8, 0.8},
-    {0.6, 0.6, 0.6},
-    {0.6, 0.6, 0.6}
+float couleurBlanche[6][4]{
+    {1.0, 1.0, 1.0, 1.0},
+    {0.8, 0.8, 0.8, 1.0},
+    {1.0, 1.0, 1.0, 1.0},
+    {0.8, 0.8, 0.8, 1.0},
+    {0.6, 0.6, 0.6, 1.0},
+    {0.6, 0.6, 0.6, 1.0}
 };
 
 float rotateAngle = 5;
 
-WhiteKey::WhiteKey(float x, float y, float z, char letter) {
+WhiteKey::WhiteKey(float x, float y, float z, char letter, int id_num) {
     position = { x,y,z };
     isPressed = false;
     type = 0;
     keyboardLetter = letter;
     char testText[] = { '*' };
+    id = id_num;
 }
 
 
@@ -95,7 +96,8 @@ void WhiteKey::show() {
             // if not pressed, just draw in white
             glBegin(GL_QUADS);
             //glColor3f(1.0f, 1.0f, 1.0f);
-            glColor3f(couleurBlanche[i][0], couleurBlanche[i][1], couleurBlanche[i][2]);
+            //glColor4f(couleurBlanche[i][0], couleurBlanche[i][1], couleurBlanche[i][2], 0.5);
+            glColor3f(couleurBlanche[i][0] - ((float)id) / 255, couleurBlanche[i][1], couleurBlanche[i][2]);
             for (int j = 0; j < 4; j++)
             {
                 glVertex3f(toucheBlanche[face[i][j]][0] * W / 2 + position.x,
@@ -107,6 +109,7 @@ void WhiteKey::show() {
     }
 
     displayText(keyboardLetter, position.x, position.y + 0.001, position.z + L/4, true);
+    
 }
 
 void WhiteKey::displayText(char text, float x, float y, float z, bool black) {

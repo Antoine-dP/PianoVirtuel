@@ -10,7 +10,7 @@ protected:
 	char testText[];
 
 public:
-	WhiteKey(float x, float y, float z, char letter);
+	WhiteKey(float x, float y, float z, char letter, int id_num);
 	void show();
 	void displayText(char text, float x, float y, float z, bool black);
 };
