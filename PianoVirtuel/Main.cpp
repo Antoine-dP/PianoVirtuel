@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Centrale Innovation. All rights reserved.
 //
 
-//#include "Windows.h"
+#include "Windows.h"
 #include <iostream>
 #include <stdio.h>
 #include <vector>
@@ -34,6 +34,16 @@
 #define GL_GLEXT_PROTOTYPES
 
 #endif
+
+// For GLM (click detection)
+#include <glm/vec3.hpp> // glm::vec3
+#include <glm/vec4.hpp> // glm::vec4
+#include <glm/mat4x4.hpp> // glm::mat4
+#include <glm/ext/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale
+#include <glm/ext/matrix_clip_space.hpp> // glm::perspective
+//#include <glm/ext/constants.hpp> // glm::pi
+#include <glm/ext/matrix_projection.hpp> // glm::pi
+
 
 using namespace std;
 
@@ -98,9 +108,6 @@ vertex touchesNoires[5] = {
 char textVect[] = "QSDFJKLMZEUIO";
 
 
-
-
-
 // Quelques variables globales (c'est pas bien)
 GLfloat pointSize = 1.0f;
 GLint downKey = 0;
@@ -123,9 +130,7 @@ GLvoid deplacementSouris(int x, int y);
 GLvoid redimensionner(int w, int h);
 
 // Déclaration d'autres fonctions
-void drawOctave();
-void drawOctave_White();
-void drawOctave_Black();
+void drawKeys();
 void playKey(int key);
 void displayText(char text[], float x, float y, float z, bool black);
 void displayText(char text, float x, float y, float z, bool black);
@@ -151,13 +156,10 @@ GLvoid affichage() {
     glMatrixMode(GL_MODELVIEW);
 
     //glEnable(GL_TEXTURE_2D);
-
-
     // Animation du cube!
     //glLoadIdentity();
     //glRotatef(-angleY, 1.0f, 0.0f, 0.0f);
     //glRotatef(-angleX, 0.0f, 1.0f, 0.0f);
-
     // Dessin d'un cube colore
     // face par face
     //for (int i = 0; i < 6; i++) {
@@ -191,38 +193,9 @@ GLvoid affichage() {
     //}
 
 
-    // Draw octave (only white keys)
-    // drawOctave();
-    for (int i = 0; i < octaveVect.size(); i++)
-    {
-        (*octaveVect[i]).show();
-    }
-    
-    
+    // Draw octave 
+    drawKeys();
 
-    //glBegin(GL_QUADS);
-    //for (int i = 0; i < 4; i++)
-    //{
-    //    //glColor3f(toucheBlanche[i].r, toucheBlanche[i].g, toucheBlanche[i].b);
-    //    glVertex3f(toucheBlanche[i].x + (i + (1-octaveSize)/2) * 0.55f , toucheBlanche[i].y, toucheBlanche[i].z);
-    //}
-    //glEnd();
-    //glBegin(GL_QUADS);
-    //for (int i = 0; i < 4; i++)
-    //{
-    //    glColor3f(toucheBlanche[i].r, toucheBlanche[i].g, toucheBlanche[i].b);
-    //    glVertex3f(toucheBlanche[i].x + 0.55f , toucheBlanche[i].y, toucheBlanche[i].z);
-    //}
-    //glEnd();
-    //glBegin(GL_QUADS);
-    //for (int i = 0; i < 4; i++)
-    //{
-    //    glColor3f(toucheBlanche[i].r, toucheBlanche[i].g, toucheBlanche[i].b);
-    //    glVertex3f(toucheBlanche[i].x - 0.55f, toucheBlanche[i].y, toucheBlanche[i].z);
-    //}
-    //glEnd();
-
-    
 
     glFlush();
     glutSwapBuffers();
@@ -401,18 +374,39 @@ GLvoid clavierUP(unsigned char touche, int x, int y) {
 
 // Fonction de rappel de la souris
 GLvoid souris(int bouton, int etat, int x, int y) {
-    // Test pour voir si le bouton gauche de la souris est appuyé
-    //if (bouton == GLUT_LEFT_BUTTON && etat == GLUT_DOWN) {
-    //    boutonClick = true;
-    //    oldX = x;
-    //    oldY = y;
-    //}
-    cout << "x: " << x << ", y: " << y << endl;
+    if (etat != GLUT_DOWN)
+        return;
+    //cout << "x: " << x << ", y: " << y << endl;
 
     // si on relache le bouton gauche
     //if (bouton == GLUT_LEFT_BUTTON && etat == GLUT_UP) {
     //    boutonClick = false;
     //}
+    windowW = glutGet(GLUT_WINDOW_WIDTH);
+    windowH = glutGet(GLUT_WINDOW_HEIGHT);
+
+    GLbyte color[4];
+    GLfloat depth;
+    GLuint index;
+
+    glReadPixels(x, windowH - y - 1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
+    glReadPixels(x, windowH - y - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+    glReadPixels(x, windowH - y - 1, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
+
+    printf("Clicked on pixel %d, %d, color %02hhx%02hhx%02hhx%02hhx, depth %f, stencil index %u\n",
+        x, y, color[0], color[1], color[2], color[3], depth, index);
+
+    glm::vec4 viewport = glm::vec4(0, 0, windowW, windowH);
+    glm::vec3 wincoord = glm::vec3(x, windowH - y - 1, depth);
+    glm::mat4 view;
+    glGetFloatv(GL_MODELVIEW_MATRIX, view);
+    glm::mat4 projection;
+    glGetFloatv(GL_PROJECTION_MATRIX, projection);
+    glm::vec3 objcoord = glm::unProject(wincoord, view, projection, viewport);
+    
+
+    //printf("Coordinates in object space: %f, %f, %f\n",
+    //    objcoord.x, objcoord.y, objcoord.z);
 }
 
 GLvoid deplacementSouris(int x, int y) {
@@ -517,93 +511,95 @@ void initOctaveVect() {
     }
 }
 
-void drawOctave(){
-    drawOctave_White();
-    drawOctave_Black();
-}
-
-void drawOctave_White() {
-
-    // 8 keys in an octave
-    GLint octaveSize = 8;
-    
-    // If even number of keys (always used for drawing octave)
-    if (octaveSize % 2 == 0) {
-        // Draw 8 keys in octave
-        for (int j = 0; j < octaveSize; j++)
-        {
-            glBegin(GL_QUADS);
-            // If key is down, change color
-            if (downKey == j + 1)
-            {
-                glColor3f(79.0f / 255.0, 194.0f / 255.0, 170.0f / 255.0);
-            }
-            else
-            {
-                glColor3f(1.0f, 1.0f, 1.0f);
-            }
-            // Draw key
-            for (int i = 0; i < 4; i++)
-            {
-                glVertex3f(toucheBlanche[i].x + (j - octaveSize / 2 + (2 * halfWidthW)) * (2*halfWidthW) * (1+gap), toucheBlanche[i].y, toucheBlanche[i].z);
-            }
-            glEnd();
-
-            // Display keyboard letter on key
-            char tempText[] = { textVect[j] };
-            displayText(tempText, (j - octaveSize / 2 + (2 * halfWidthW)) * (2 * halfWidthW) * (1 + gap/2), 0.2, -toucheBlanche[0].z / 2, true);
-            
-            //displayText(tempText, 0, 1, 0, true);
-        }
-    }
-    // If odd number of keys (not used for drawing octave)
-    else {
-        for (int j = 0; j < octaveSize; j++)
-        {
-            glBegin(GL_QUADS);
-            for (int i = 0; i < 4; i++)
-            {
-                glVertex3f(toucheBlanche[i].x + (j + (1 - octaveSize) / 2) * (2*halfWidthW) * (1+gap), toucheBlanche[i].y, toucheBlanche[i].z);
-            }
-            glEnd();
-        }
-    }
-}
-
-void drawOctave_Black() {
-    // 8 keys in an octave
-    GLint octaveSizeB = 5;
-
-    vertex posTouchesNoires[5] = { {-3}, {-2}, {0}, {1}, {2} };
-    
-    for (int j = 0; j < octaveSizeB; j++)
+void drawKeys(){
+    for (int i = 0; i < octaveVect.size(); i++)
     {
-        glBegin(GL_QUADS);
-        // If key is down, change color
-        if (downKey == j + 9)
-        {
-            glColor3f(79.0f / 255.0, 194.0f / 255.0, 170.0f / 255.0);
-        }
-        else
-        {
-            // Default color : black
-            glColor3f(0.0f, 0.0f, 0.0f);
-        }
-        // Draw key
-        for (int i = 0; i < 4; i++)
-        {
-            glVertex3f(toucheNoire[i].x + posTouchesNoires[j].x * (2 * halfWidthW ) * (1 + gap), toucheNoire[i].y, toucheNoire[i].z + halfLengthB - halfLengthW);
-        }
-        glEnd();
-
-        char tempText[] = { textVect[j+8] };
-        displayText(tempText, posTouchesNoires[j].x * (2 * halfWidthW) * (1 + gap/2), toucheNoire[0].y + 0.2, halfLengthB - halfLengthW, false);
+        (*octaveVect[i]).show();
     }
-
-        
-    
-
 }
+
+// Old versions
+//void drawOctave_White() {
+//
+//    // 8 keys in an octave
+//    GLint octaveSize = 8;
+//    
+//    // If even number of keys (always used for drawing octave)
+//    if (octaveSize % 2 == 0) {
+//        // Draw 8 keys in octave
+//        for (int j = 0; j < octaveSize; j++)
+//        {
+//            glBegin(GL_QUADS);
+//            // If key is down, change color
+//            if (downKey == j + 1)
+//            {
+//                glColor3f(79.0f / 255.0, 194.0f / 255.0, 170.0f / 255.0);
+//            }
+//            else
+//            {
+//                glColor3f(1.0f, 1.0f, 1.0f);
+//            }
+//            // Draw key
+//            for (int i = 0; i < 4; i++)
+//            {
+//                glVertex3f(toucheBlanche[i].x + (j - octaveSize / 2 + (2 * halfWidthW)) * (2*halfWidthW) * (1+gap), toucheBlanche[i].y, toucheBlanche[i].z);
+//            }
+//            glEnd();
+//
+//            // Display keyboard letter on key
+//            char tempText[] = { textVect[j] };
+//            displayText(tempText, (j - octaveSize / 2 + (2 * halfWidthW)) * (2 * halfWidthW) * (1 + gap/2), 0.2, -toucheBlanche[0].z / 2, true);
+//            
+//            //displayText(tempText, 0, 1, 0, true);
+//        }
+//    }
+//    // If odd number of keys (not used for drawing octave)
+//    else {
+//        for (int j = 0; j < octaveSize; j++)
+//        {
+//            glBegin(GL_QUADS);
+//            for (int i = 0; i < 4; i++)
+//            {
+//                glVertex3f(toucheBlanche[i].x + (j + (1 - octaveSize) / 2) * (2*halfWidthW) * (1+gap), toucheBlanche[i].y, toucheBlanche[i].z);
+//            }
+//            glEnd();
+//        }
+//    }
+//}
+//void drawOctave_Black() {
+//    // 8 keys in an octave
+//    GLint octaveSizeB = 5;
+//
+//    vertex posTouchesNoires[5] = { {-3}, {-2}, {0}, {1}, {2} };
+//    
+//    for (int j = 0; j < octaveSizeB; j++)
+//    {
+//        glBegin(GL_QUADS);
+//        // If key is down, change color
+//        if (downKey == j + 9)
+//        {
+//            glColor3f(79.0f / 255.0, 194.0f / 255.0, 170.0f / 255.0);
+//        }
+//        else
+//        {
+//            // Default color : black
+//            glColor3f(0.0f, 0.0f, 0.0f);
+//        }
+//        // Draw key
+//        for (int i = 0; i < 4; i++)
+//        {
+//            glVertex3f(toucheNoire[i].x + posTouchesNoires[j].x * (2 * halfWidthW ) * (1 + gap), toucheNoire[i].y, toucheNoire[i].z + halfLengthB - halfLengthW);
+//        }
+//        glEnd();
+//
+//        char tempText[] = { textVect[j+8] };
+//        displayText(tempText, posTouchesNoires[j].x * (2 * halfWidthW) * (1 + gap/2), toucheNoire[0].y + 0.2, halfLengthB - halfLengthW, false);
+//    }
+//
+//        
+//    
+//
+//}
 
 void playKey(int key) {
     //PlaySound(TEXT("E:\P1RV\PianoVirtuel\PianoSounds\C.wav"), NULL, SND_FILENAME | SND_ASYNC);
