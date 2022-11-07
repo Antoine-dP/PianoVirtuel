@@ -340,24 +340,18 @@ GLvoid clavierUP(unsigned char touche, int x, int y) {
 
 // Fonction de rappel de la souris
 GLvoid souris(int bouton, int etat, int x, int y) {
+
     windowW = glutGet(GLUT_WINDOW_WIDTH);
     windowH = glutGet(GLUT_WINDOW_HEIGHT);
-
+    // Get color of clicked pixel
     GLbyte color[4];
-    //GLfloat color[3];
-    //GLfloat depth;
-    //GLuint index;
-
-    //glReadPixels(x, windowH - y - 1, 1, 1, GL_RGB, GL_FLOAT, color);
+    glReadBuffer(GL_FRONT);
     glReadPixels(x, windowH - y - 1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
-    //glReadPixels(x, windowH - y - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-    //glReadPixels(x, windowH - y - 1, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
 
-
+    // Convert to ID
     float r = -color[0]-1;
     cout << "r = " << (float)color[0] << endl;
     //printf("Color : %x%x%x \n", color[0], color[1], color[2]);
-
     //cout << "x: " << x << ", y: " << y << endl;
 
     // si on relache le bouton gauche
@@ -365,21 +359,21 @@ GLvoid souris(int bouton, int etat, int x, int y) {
         leftMouseDown = false;
         pressKey(false);
     }
-    //// si on relache le bouton droit
-    //else if (bouton == GLUT_RIGHT_BUTTON && etat == GLUT_UP) {
-    //    rightMouseDown = false;
-    //    pressKey(false);
-    //}
+    // si on relache le bouton droit
+    else if (bouton == GLUT_RIGHT_BUTTON && etat == GLUT_UP) {
+        rightMouseDown = false;
+        pressKey(false);
+    }
     // si on appuie le bouton gauche
     else if (bouton == GLUT_LEFT_BUTTON && etat == GLUT_DOWN) {
         leftMouseDown = true;
         pressKey(keyFromID(r), true);
     }
-    //// si on appuie le bouton droit
-    //else if (bouton == GLUT_RIGHT_BUTTON && etat == GLUT_DOWN) {
-    //    rightMouseDown = true;
-    //    pressKey(keyFromID(r), true);
-    //}
+    // si on appuie le bouton droit
+    else if (bouton == GLUT_RIGHT_BUTTON && etat == GLUT_DOWN) {
+        rightMouseDown = true;
+        pressKey(keyFromID(r), true);
+    }
     
     glutPostRedisplay();
 }
