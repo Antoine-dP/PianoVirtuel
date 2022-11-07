@@ -36,13 +36,13 @@
 #endif
 
 // For GLM (click detection)
-#include <glm/vec3.hpp> // glm::vec3
-#include <glm/vec4.hpp> // glm::vec4
-#include <glm/mat4x4.hpp> // glm::mat4
-#include <glm/ext/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale
-#include <glm/ext/matrix_clip_space.hpp> // glm::perspective
-//#include <glm/ext/constants.hpp> // glm::pi
-#include <glm/ext/matrix_projection.hpp> // glm::pi
+//#include <glm/vec3.hpp> // glm::vec3
+//#include <glm/vec4.hpp> // glm::vec4
+//#include <glm/mat4x4.hpp> // glm::mat4
+//#include <glm/ext/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale
+//#include <glm/ext/matrix_clip_space.hpp> // glm::perspective
+////#include <glm/ext/constants.hpp> // glm::pi
+//#include <glm/ext/matrix_projection.hpp> // glm::pi
 
 
 using namespace std;
@@ -396,13 +396,13 @@ GLvoid souris(int bouton, int etat, int x, int y) {
     printf("Clicked on pixel %d, %d, color %02hhx%02hhx%02hhx%02hhx, depth %f, stencil index %u\n",
         x, y, color[0], color[1], color[2], color[3], depth, index);
 
-    glm::vec4 viewport = glm::vec4(0, 0, windowW, windowH);
-    glm::vec3 wincoord = glm::vec3(x, windowH - y - 1, depth);
-    glm::mat4 view;
-    glGetFloatv(GL_MODELVIEW_MATRIX, view);
-    glm::mat4 projection;
-    glGetFloatv(GL_PROJECTION_MATRIX, projection);
-    glm::vec3 objcoord = glm::unProject(wincoord, view, projection, viewport);
+    //glm::vec4 viewport = glm::vec4(0, 0, windowW, windowH);
+    //glm::vec3 wincoord = glm::vec3(x, windowH - y - 1, depth);
+    //glm::mat4 view;
+    //glGetFloatv(GL_MODELVIEW_MATRIX, view);
+    //glm::mat4 projection;
+    //glGetFloatv(GL_PROJECTION_MATRIX, projection);
+    //glm::vec3 objcoord = glm::unProject(wincoord, view, projection, viewport);
     
 
     //printf("Coordinates in object space: %f, %f, %f\n",
