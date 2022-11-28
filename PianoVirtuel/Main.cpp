@@ -114,6 +114,8 @@ char textVect[] = "QSDFJKLMZEUIO";
 // Quelques variables globales (c'est pas bien)
 GLfloat pointSize = 1.0f;
 GLint downKey = 0;
+bool leftMouseDown = false;
+bool rightMouseDown = false;
 
 
 // Taille de la fenêtre
@@ -139,6 +141,8 @@ void displayText(char text[], float x, float y, float z, bool black);
 void displayText(char text, float x, float y, float z, bool black);
 void initOctaveVect();
 void pressKey(char letter, bool down);
+void pressKey(bool down);
+char keyFromID(int r);
 
 vector<Key*> octaveVect;
 vector<bool> vb = { false, false, false, false, false, false, false ,false,false,false,false,false,false };
@@ -180,44 +184,6 @@ GLvoid affichage() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
-
-    //glEnable(GL_TEXTURE_2D);
-    // Animation du cube!
-    //glLoadIdentity();
-    //glRotatef(-angleY, 1.0f, 0.0f, 0.0f);
-    //glRotatef(-angleX, 0.0f, 1.0f, 0.0f);
-    // Dessin d'un cube colore
-    // face par face
-    //for (int i = 0; i < 6; i++) {
-    //    glBegin(GL_POLYGON);
-    //    for (int j = 0; j < 4; j++) {
-    //        // Couleur
-    //        if (!alpha) {
-    //            glDisable(GL_BLEND);
-    //            if (colorCube) {
-    //                glColor3f(cube[face[i][j]].r, cube[face[i][j]].g, cube[face[i][j]].b);
-    //            }
-    //            else {
-    //                glColor3f(cubeBlanc[face[i][j]].r, cubeBlanc[face[i][j]].g, cubeBlanc[face[i][j]].b);
-    //            }
-    //        }
-    //        else {
-    //            // enabling blend
-    //            glEnable(GL_BLEND);
-    //            if (colorCube) {
-    //                glColor4f(cube[face[i][j]].r, cube[face[i][j]].g, cube[face[i][j]].b, 0.5f);
-    //            }
-    //            else {
-    //                glColor4f(cubeBlanc[face[i][j]].r, cubeBlanc[face[i][j]].g, cubeBlanc[face[i][j]].b, 0.5f);
-    //            }
-    //        }
-    //        // Tex
-    //        glTexCoord2d(faceTexcoord[i][j].s, faceTexcoord[i][j].t);
-    //        glVertex3f(cube[face[i][j]].x, cube[face[i][j]].y, cube[face[i][j]].z);
-    //    }
-    //    glEnd();
-    //}
-
 
     // Draw octave 
     drawKeys();
@@ -466,39 +432,42 @@ GLvoid clavierUP(unsigned char touche, int x, int y) {
 
 // Fonction de rappel de la souris
 GLvoid souris(int bouton, int etat, int x, int y) {
-    if (etat != GLUT_DOWN)
-        return;
+
+    windowW = glutGet(GLUT_WINDOW_WIDTH);
+    windowH = glutGet(GLUT_WINDOW_HEIGHT);
+    // Get color of clicked pixel
+    GLbyte color[4];
+    glReadBuffer(GL_FRONT);
+    glReadPixels(x, windowH - y - 1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
+
+    // Convert to ID
+    float r = -color[0]-1;
+    cout << "r = " << (float)color[0] << endl;
+    //printf("Color : %x%x%x \n", color[0], color[1], color[2]);
     //cout << "x: " << x << ", y: " << y << endl;
 
     // si on relache le bouton gauche
-    //if (bouton == GLUT_LEFT_BUTTON && etat == GLUT_UP) {
-    //    boutonClick = false;
-    //}
-    windowW = glutGet(GLUT_WINDOW_WIDTH);
-    windowH = glutGet(GLUT_WINDOW_HEIGHT);
-
-    GLbyte color[4];
-    GLfloat depth;
-    GLuint index;
-
-    glReadPixels(x, windowH - y - 1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
-    glReadPixels(x, windowH - y - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-    glReadPixels(x, windowH - y - 1, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
-
-    printf("Clicked on pixel %d, %d, color %02hhx%02hhx%02hhx%02hhx, depth %f, stencil index %u\n",
-        x, y, color[0], color[1], color[2], color[3], depth, index);
-
-    //glm::vec4 viewport = glm::vec4(0, 0, windowW, windowH);
-    //glm::vec3 wincoord = glm::vec3(x, windowH - y - 1, depth);
-    //glm::mat4 view;
-    //glGetFloatv(GL_MODELVIEW_MATRIX, view);
-    //glm::mat4 projection;
-    //glGetFloatv(GL_PROJECTION_MATRIX, projection);
-    //glm::vec3 objcoord = glm::unProject(wincoord, view, projection, viewport);
+    if (bouton == GLUT_LEFT_BUTTON && etat == GLUT_UP) {
+        leftMouseDown = false;
+        pressKey(false);
+    }
+    // si on relache le bouton droit
+    else if (bouton == GLUT_RIGHT_BUTTON && etat == GLUT_UP) {
+        rightMouseDown = false;
+        pressKey(false);
+    }
+    // si on appuie le bouton gauche
+    else if (bouton == GLUT_LEFT_BUTTON && etat == GLUT_DOWN) {
+        leftMouseDown = true;
+        pressKey(keyFromID(r), true);
+    }
+    // si on appuie le bouton droit
+    else if (bouton == GLUT_RIGHT_BUTTON && etat == GLUT_DOWN) {
+        rightMouseDown = true;
+        pressKey(keyFromID(r), true);
+    }
     
-
-    //printf("Coordinates in object space: %f, %f, %f\n",
-    //    objcoord.x, objcoord.y, objcoord.z);
+    glutPostRedisplay();
 }
 
 GLvoid deplacementSouris(int x, int y) {
@@ -558,7 +527,7 @@ int main(int argc, char* argv[])
     glutCreateWindow("Piano3D");
 
     // Définition de la couleur d'effacement du framebuffer
-    glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
+    glClearColor(0.300f, 0.300f, 0.300f, 1.0f);
 
     // Initialement on desactive le Z-buffer
     glEnable(GL_DEPTH_TEST);
@@ -601,12 +570,12 @@ void initOctaveVect() {
     // White keys
     for (int i = 0; i < 8; i++)
     {
-        keyPtr = new WhiteKey(touchesBlanches[i].x, touchesBlanches[i].y, touchesBlanches[i].z, textVect[i]);
+        keyPtr = new WhiteKey(touchesBlanches[i].x, touchesBlanches[i].y, touchesBlanches[i].z, textVect[i], i+1);
         octaveVect.push_back(keyPtr);
     }
     for (int i = 0; i < 5; i++)
     {
-        keyPtr = new BlackKey(touchesNoires[i].x, touchesNoires[i].y, touchesNoires[i].z, textVect[i+8]);
+        keyPtr = new BlackKey(touchesNoires[i].x, touchesNoires[i].y, touchesNoires[i].z, textVect[i+8], i+10);
         octaveVect.push_back(keyPtr);
     }
 }
@@ -757,11 +726,84 @@ void pressKey(char letter, bool down) {
     }
 }
 
+void pressKey(bool down) {
 
+    for (int i = 0; i < octaveVect.size(); i++)
+    {
+        (*octaveVect[i]).press(down);
+    }
+    return;
+}
 
+char keyFromID(int r) {
+    switch (r) {
+    case 1:
+    case 52:
+    case 103:
+        return 'Q';
+        break;
+    case 2:
+    case 53:
+    case 104:
+        return 'S';
+        break;
+    case 3:
+    case 54:
+    case 105:
+        return 'D';
+        break;
+    case 4:
+    case 55:
+    case 106:
+        return 'F';
+        break;
+    case 5:
+    case 56:
+    case 107:
+        return 'J';
+        break;
+    case 6:
+    case 57:
+    case 108:
+        return 'K';
+        break;
+    case 7:
+    case 58:
+    case 109:
+        return 'L';
+        break;
+    case 8:
+    case 59:
+    case 110:
+        return 'M';
+        break;
+    case -42:
+    case -16:
+        return 'Z';
+        break;
+    case -41:
+    case -15:
+        return 'E';
+        break;
+    case -40:
+    case -14:
+        return 'U';
+        break;
+    case -39:
+    case -13:
+        return 'I';
+        break;
+    case -38:
+    case -12:
+        return 'O';
+        break;
+    }
+    return ' ';
+}
 
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 

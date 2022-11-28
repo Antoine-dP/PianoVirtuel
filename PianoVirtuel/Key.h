@@ -32,10 +32,12 @@ protected:
 	vertex position;
 	bool isPressed;
 	char keyboardLetter;
+	int id;
 public:
 	Key();
-	Key(int keyType, float x, float y, float z, char letter);
+	Key(int keyType, float x, float y, float z, char letter, int id_num);
 	void press(bool isDown);
 	virtual void show() = 0;
 	char getLetter() { return keyboardLetter; };
+	int getID() { return id; };
 };

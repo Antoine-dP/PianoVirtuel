@@ -1,7 +1,7 @@
 #include "Key.h"
 
 
-Key::Key(int keyType, float x, float y, float z, char letter) {
+Key::Key(int keyType, float x, float y, float z, char letter, int id_num) {
 	position = { x,y,z };
     isPressed = false;
     if (keyType == 0 || keyType == 1)
@@ -12,6 +12,7 @@ Key::Key(int keyType, float x, float y, float z, char letter) {
         type = 0;
     }
     keyboardLetter = letter;
+    id = id_num;
 }
 
 Key::Key() {
@@ -19,6 +20,7 @@ Key::Key() {
     isPressed = false;
     type = 0;
     keyboardLetter = ' ';
+    id = -1;
 }
 
 void Key::press(bool isDown) {
