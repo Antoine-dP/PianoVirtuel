@@ -440,9 +440,7 @@ void initInstrument() {
 }
 
 int main(int argc, char* argv[])
-{
-    initInstrument();
-    
+{  
 
     // Initialisation de GLUT
     glutInit(&argc, argv);
@@ -480,6 +478,7 @@ int main(int argc, char* argv[])
     glutReshapeFunc(redimensionner);
 
     initOctaveVect();
+    initInstrument();
 
     // Lancement de la boucle infinie GLUT
     glutMainLoop();
