@@ -776,6 +776,10 @@ void pressKey(bool down) {
     {
         (*octaveVect[i]).press(down);
     }
+    for (int i = 0; i < vb.size(); i++)
+    {
+        vb[i] = false;
+    }
     return;
 }
 
