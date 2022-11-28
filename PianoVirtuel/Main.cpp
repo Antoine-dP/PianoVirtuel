@@ -19,6 +19,8 @@
 #include <conio.h>
 #pragma comment (lib,"Winmm.lib")
 
+#include <irrKlang.h>
+
 // Fichiers d'en-têtes pour OpenGL et GLUT
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -46,7 +48,8 @@
 
 
 using namespace std;
-
+using namespace irrklang;
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 // Structure de données simpliste
 // pour stocker un sommet 3D et 
 // ses informations de couleur
@@ -138,6 +141,29 @@ void initOctaveVect();
 void pressKey(char letter, bool down);
 
 vector<Key*> octaveVect;
+vector<bool> vb = { false, false, false, false, false, false, false ,false,false,false,false,false,false };
+
+//INSTRUMENTS
+vector<string> piano = {
+    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\C.wav",
+    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\D.wav",
+    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\E.wav",
+    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\F.wav",
+    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\G.wav",
+    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\A.wav",
+    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\B.wav",
+    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\C.wav",
+    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\C#.wav",
+    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\Eb.wav",
+    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\F#.wav",
+    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\G#.wav",
+    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\Bb.wav",
+};
+
+//GLOBAL
+vector<vector<string>> instruments;
+
+
 
 // Shader stuff
 //UCreateShaders
@@ -209,6 +235,7 @@ GLvoid clavier(unsigned char touche, int x, int y) {
     // 'p' : affichage du carre plein
     // 'f' : affichage du carre en fil de fer
     // 's' : affichage des sommets du carre
+    ISoundEngine* engine = createIrrKlangDevice();
 
     switch (touche) {
     //case 'p': // carre plein
@@ -233,61 +260,113 @@ GLvoid clavier(unsigned char touche, int x, int y) {
     case 'q':
     case 'Q':
         pressKey('Q', true);
-        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\C.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\C.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        if (!vb[0]) {
+            vb[0] = true;
+            engine->play2D( instruments[0][0].c_str(), false);
+        }
         break;
     case 's':
     case'S':
         pressKey('S', true);
-        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\D.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\D.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        if (!vb[1]) {
+            vb[1] = true;
+            engine->play2D(instruments[0][1].c_str(), false);
+        }
         break;
     case 'd':
     case 'D':
         pressKey('D', true);
-        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\E.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\E.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        if (!vb[2]) {
+            vb[2] = true;
+            engine->play2D(instruments[0][2].c_str(), false);
+        }
         break;
     case 'f':
     case 'F':
         pressKey('F', true);
-        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\F.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\F.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        if (!vb[3]) {
+            vb[3] = true;
+            engine->play2D(instruments[0][3].c_str(), false);
+        }
         break;
     case 'j':
     case 'J':
         pressKey('J', true);
-        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\G.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\G.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        if (!vb[4]) {
+            vb[4] = true;
+            engine->play2D(instruments[0][4].c_str(), false);
+        }
         break;
     case 'k':
     case 'K':
         pressKey('K', true);
-        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\A.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\A.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        if (!vb[5]) {
+            vb[5] = true;
+            engine->play2D(instruments[0][5].c_str(), false);
+        }
         break;
     case 'l':
     case 'L':
         pressKey('L', true);
-        PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\B.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\B.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        if (!vb[6]) {
+            vb[6] = true;
+            engine->play2D(instruments[0][6].c_str(), false);
+        }
         break;
     case 'm':
     case 'M':
         pressKey('M', true);
+        if (!vb[7]) {
+            vb[7] = true;
+            engine->play2D(instruments[0][7].c_str(), false);
+        }
         break;
     case 'z':
     case 'Z':
         pressKey('Z', true);
+        if (!vb[8]) {
+            vb[8] = true;
+            engine->play2D(instruments[0][8].c_str(), false);
+        }
         break;
     case 'e':
     case 'E':
         pressKey('E', true);
+        if (!vb[9]) {
+            vb[9] = true;
+            engine->play2D(instruments[0][9].c_str(), false);
+        }
         break;
     case 'u':
     case 'U':
         pressKey('U', true);
+        if (!vb[10]) {
+            vb[10] = true;
+            engine->play2D(instruments[0][10].c_str(), false);
+        }
         break;
     case 'i':
     case 'I':
         pressKey('I', true);
+        if (!vb[11]) {
+            vb[11] = true;
+            engine->play2D(instruments[0][11].c_str(), false);
+        }
         break;
     case 'o':
     case 'O':
         pressKey('O', true);
+        if (!vb[12]) {
+            vb[12] = true;
+            engine->play2D(instruments[0][12].c_str(), false);
+        }
         break;
 
     case '+':
@@ -319,54 +398,67 @@ GLvoid clavierUP(unsigned char touche, int x, int y) {
     case 'q':
     case 'Q':
         pressKey('Q', false);
+        vb[0] = false;
         break;
     case 's':
     case 'S':
         pressKey('S', false);
+        vb[1] = false;
         break;
     case 'd':
     case 'D':
         pressKey('D', false);
+        vb[2] = false;
         break;
     case 'f':
     case 'F':
         pressKey('F', false);
+        vb[3] = false;
         break;
     case 'j':
     case 'J':
         pressKey('J', false);
+        vb[4] = false;
         break;
     case 'k':
     case 'K':
         pressKey('K', false);
+        vb[5] = false;
         break;
     case 'l':
     case 'L':
         pressKey('L', false);
+        vb[6] = false;
         break;
     case 'm':
     case 'M':
         pressKey('M', false);
+        vb[7] = false;
         break;
     case 'z':
     case 'Z':
         pressKey('Z', false);
+        vb[8] = false;
         break;
     case 'e':
     case 'E':
         pressKey('E', false);
+        vb[9] = false;
         break;
     case 'u':
     case 'U':
         pressKey('U', false);
+        vb[10] = false;
         break;
     case 'i':
     case 'I':
         pressKey('I', false);
+        vb[11] = false;
         break;
     case 'o':
     case 'O':
         pressKey('O', false);
+        vb[12] = false;
         break;
     }
     glutPostRedisplay();
@@ -445,9 +537,15 @@ GLvoid redimensionner(int w, int h) {
     glMatrixMode(GL_MODELVIEW);
 }
 
+void initInstrument() {
+    instruments.push_back(piano);
+}
 
 int main(int argc, char* argv[])
 {
+    initInstrument();
+    
+
     // Initialisation de GLUT
     glutInit(&argc, argv);
     // Choix du mode d'affichage (ici RVB)
@@ -490,6 +588,8 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -656,6 +756,8 @@ void pressKey(char letter, bool down) {
         }
     }
 }
+
+
 
 
 
