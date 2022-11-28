@@ -20,6 +20,7 @@
 #pragma comment (lib,"Winmm.lib")
 
 #include <irrKlang.h>
+#include <boost/filesystem.hpp>
 
 // Fichiers d'en-têtes pour OpenGL et GLUT
 #ifdef __APPLE__
@@ -140,6 +141,7 @@ void playKey(int key);
 void displayText(char text[], float x, float y, float z, bool black);
 void displayText(char text, float x, float y, float z, bool black);
 void initOctaveVect();
+void initInstrument();
 void pressKey(char letter, bool down);
 void pressKey(bool down);
 char keyFromID(int r);
@@ -163,7 +165,6 @@ vector<string> piano = {
     "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\G#.wav",
     "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\Bb.wav",
 };
-
 vector<string> guitare = {
     "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\C.wav",
     "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\D.wav",
@@ -183,6 +184,7 @@ vector<string> guitare = {
 //GLOBAL
 vector<vector<string>> instruments;
 int instruSelec = 0;
+boost::filesystem::path full_path;
 
 
 
@@ -434,11 +436,6 @@ GLvoid redimensionner(int w, int h) {
     glMatrixMode(GL_MODELVIEW);
 }
 
-void initInstrument() {
-    instruments.push_back(piano);
-    instruments.push_back(guitare);
-}
-
 int main(int argc, char* argv[])
 {  
 
@@ -480,6 +477,10 @@ int main(int argc, char* argv[])
     initOctaveVect();
     initInstrument();
 
+    //boost::filesystem::path full_path(boost::filesystem::current_path());
+    full_path = boost::filesystem::path(boost::filesystem::current_path());
+    std::cout << "Current path is : " << full_path << std::endl;
+
     // Lancement de la boucle infinie GLUT
     glutMainLoop();
 
@@ -507,6 +508,13 @@ void initOctaveVect() {
         octaveVect.push_back(keyPtr);
     }
 }
+
+void initInstrument() {
+    instruments.push_back(piano);
+    instruments.push_back(guitare);
+
+}
+
 
 void drawKeys(){
     for (int i = 0; i < octaveVect.size(); i++)
