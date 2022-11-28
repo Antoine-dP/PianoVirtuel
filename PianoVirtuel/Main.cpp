@@ -198,141 +198,60 @@ GLvoid clavier(unsigned char touche, int x, int y) {
 
     // Suivant les touches pressees, nous aurons un comportement different de l'application
     // ESCAPE ou 'q' : fermera l'application
-    // 'p' : affichage du carre plein
-    // 'f' : affichage du carre en fil de fer
-    // 's' : affichage des sommets du carre
     ISoundEngine* engine = createIrrKlangDevice();
 
-    switch (touche) {
-    //case 'p': // carre plein
-    //    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    //    break;
-    //case 'f': // fil de fer
-    //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    //    break;
-    //case 's': // sommets du carre
-    //    glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-    //    break;
-    //    // Gestion du tampon de profondeur
-    //case 'd':
-    //    glEnable(GL_DEPTH_TEST);
-    //    glutPostRedisplay();
-    //    break;
-    //case 'D':
-    //    glDisable(GL_DEPTH_TEST);
-    //    glutPostRedisplay();
-    //    break;
-        
+    switch (touche) {        
     case 'q':
     case 'Q':
         pressKey('Q', true);
-        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\C.wav"), NULL, SND_FILENAME | SND_ASYNC);
-        if (!vb[0]) {
-            vb[0] = true;
-            engine->play2D( instruments[0][0].c_str(), false);
-        }
         break;
     case 's':
     case'S':
         pressKey('S', true);
-        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\D.wav"), NULL, SND_FILENAME | SND_ASYNC);
-        if (!vb[1]) {
-            vb[1] = true;
-            engine->play2D(instruments[0][1].c_str(), false);
-        }
         break;
     case 'd':
     case 'D':
         pressKey('D', true);
-        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\E.wav"), NULL, SND_FILENAME | SND_ASYNC);
-        if (!vb[2]) {
-            vb[2] = true;
-            engine->play2D(instruments[0][2].c_str(), false);
-        }
         break;
     case 'f':
     case 'F':
         pressKey('F', true);
-        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\F.wav"), NULL, SND_FILENAME | SND_ASYNC);
-        if (!vb[3]) {
-            vb[3] = true;
-            engine->play2D(instruments[0][3].c_str(), false);
-        }
         break;
     case 'j':
     case 'J':
         pressKey('J', true);
-        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\G.wav"), NULL, SND_FILENAME | SND_ASYNC);
-        if (!vb[4]) {
-            vb[4] = true;
-            engine->play2D(instruments[0][4].c_str(), false);
-        }
         break;
     case 'k':
     case 'K':
         pressKey('K', true);
-        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\A.wav"), NULL, SND_FILENAME | SND_ASYNC);
-        if (!vb[5]) {
-            vb[5] = true;
-            engine->play2D(instruments[0][5].c_str(), false);
-        }
         break;
     case 'l':
     case 'L':
         pressKey('L', true);
-        //PlaySound(TEXT("E:\\P1RV\\PianoVirtuel\\PianoSounds\\B.wav"), NULL, SND_FILENAME | SND_ASYNC);
-        if (!vb[6]) {
-            vb[6] = true;
-            engine->play2D(instruments[0][6].c_str(), false);
-        }
         break;
     case 'm':
     case 'M':
         pressKey('M', true);
-        if (!vb[7]) {
-            vb[7] = true;
-            engine->play2D(instruments[0][7].c_str(), false);
-        }
         break;
     case 'z':
     case 'Z':
         pressKey('Z', true);
-        if (!vb[8]) {
-            vb[8] = true;
-            engine->play2D(instruments[0][8].c_str(), false);
-        }
         break;
     case 'e':
     case 'E':
         pressKey('E', true);
-        if (!vb[9]) {
-            vb[9] = true;
-            engine->play2D(instruments[0][9].c_str(), false);
-        }
         break;
     case 'u':
     case 'U':
         pressKey('U', true);
-        if (!vb[10]) {
-            vb[10] = true;
-            engine->play2D(instruments[0][10].c_str(), false);
-        }
         break;
     case 'i':
     case 'I':
         pressKey('I', true);
-        if (!vb[11]) {
-            vb[11] = true;
-            engine->play2D(instruments[0][11].c_str(), false);
-        }
         break;
     case 'o':
     case 'O':
         pressKey('O', true);
-        if (!vb[12]) {
-            vb[12] = true;
-            engine->play2D(instruments[0][12].c_str(), false);
-        }
         break;
 
     case '+':
@@ -443,8 +362,6 @@ GLvoid souris(int bouton, int etat, int x, int y) {
     // Convert to ID
     float r = -color[0]-1;
     cout << "r = " << (float)color[0] << endl;
-    //printf("Color : %x%x%x \n", color[0], color[1], color[2]);
-    //cout << "x: " << x << ", y: " << y << endl;
 
     // si on relache le bouton gauche
     if (bouton == GLUT_LEFT_BUTTON && etat == GLUT_UP) {
@@ -716,12 +633,142 @@ void displayText(char text, float x, float y, float z, bool black) {
 void pressKey(char letter, bool down) {
 
     char c = (char)toupper(letter);
+    ISoundEngine* engine = createIrrKlangDevice();
+
+    cout << "was here" << endl;
 
     for (int i = 0; i < octaveVect.size(); i++)
     {
         if ((*octaveVect[i]).getLetter() == c) {
             (*octaveVect[i]).press(down);
-            return;
+            //return;
+            break;
+        }
+    }
+    if (down) {
+        cout << "was here 0" << endl;
+        switch (c) {
+        case 'Q':
+            if (!vb[0]) {
+                vb[0] = true;
+                engine->play2D(instruments[0][0].c_str(), false);
+            }
+            break;
+        case'S':
+            if (!vb[1]) {
+                vb[1] = true;
+                engine->play2D(instruments[0][1].c_str(), false);
+            }
+            break;
+        case 'D':
+            if (!vb[2]) {
+                vb[2] = true;
+                engine->play2D(instruments[0][2].c_str(), false);
+            }
+            break;
+        case 'F':
+            if (!vb[3]) {
+                vb[3] = true;
+                engine->play2D(instruments[0][3].c_str(), false);
+            }
+            break;
+        case 'J':
+            if (!vb[4]) {
+                vb[4] = true;
+                engine->play2D(instruments[0][4].c_str(), false);
+            }
+            break;
+        case 'K':
+            if (!vb[5]) {
+                vb[5] = true;
+                engine->play2D(instruments[0][5].c_str(), false);
+            }
+            break;
+        case 'L':
+            if (!vb[6]) {
+                vb[6] = true;
+                engine->play2D(instruments[0][6].c_str(), false);
+            }
+            break;
+        case 'M':
+            if (!vb[7]) {
+                vb[7] = true;
+                engine->play2D(instruments[0][7].c_str(), false);
+            }
+            break;
+        case 'Z':
+            if (!vb[8]) {
+                vb[8] = true;
+                engine->play2D(instruments[0][8].c_str(), false);
+            }
+            break;
+        case 'E':
+            if (!vb[9]) {
+                vb[9] = true;
+                engine->play2D(instruments[0][9].c_str(), false);
+            }
+            break;
+        case 'U':
+            if (!vb[10]) {
+                vb[10] = true;
+                engine->play2D(instruments[0][10].c_str(), false);
+            }
+            break;
+        case 'I':
+            if (!vb[11]) {
+                vb[11] = true;
+                engine->play2D(instruments[0][11].c_str(), false);
+            }
+            break;
+        case 'O':
+            if (!vb[12]) {
+                vb[12] = true;
+                engine->play2D(instruments[0][12].c_str(), false);
+            }
+            break;
+        }
+    }
+    else {
+        switch (c) {
+        case 'Q':
+            vb[0] = false;
+            break;
+        case 'S':
+            vb[1] = false;
+            break;
+        case 'D':
+            vb[2] = false;
+            break;
+        case 'F':
+            vb[3] = false;
+            break;
+        case 'J':
+            vb[4] = false;
+            break;
+        case 'K':
+            vb[5] = false;
+            break;
+        case 'L':
+            vb[6] = false;
+            break;
+        case 'M':
+            vb[7] = false;
+            break;
+        case 'Z':
+            vb[8] = false;
+            break;
+        case 'E':
+            vb[9] = false;
+            break;
+        case 'U':
+            vb[10] = false;
+            break;
+        case 'I':
+            vb[11] = false;
+            break;
+        case 'O':
+            vb[12] = false;
+            break;
         }
     }
 }
