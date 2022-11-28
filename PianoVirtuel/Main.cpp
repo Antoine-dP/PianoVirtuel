@@ -361,7 +361,7 @@ GLvoid souris(int bouton, int etat, int x, int y) {
 
     // Convert to ID
     float r = -color[0]-1;
-    cout << "r = " << (float)color[0] << endl;
+    //cout << "r = " << r << endl;
 
     // si on relache le bouton gauche
     if (bouton == GLUT_LEFT_BUTTON && etat == GLUT_UP) {
@@ -635,18 +635,15 @@ void pressKey(char letter, bool down) {
     char c = (char)toupper(letter);
     ISoundEngine* engine = createIrrKlangDevice();
 
-    cout << "was here" << endl;
 
     for (int i = 0; i < octaveVect.size(); i++)
     {
         if ((*octaveVect[i]).getLetter() == c) {
             (*octaveVect[i]).press(down);
-            //return;
             break;
         }
     }
     if (down) {
-        cout << "was here 0" << endl;
         switch (c) {
         case 'Q':
             if (!vb[0]) {
