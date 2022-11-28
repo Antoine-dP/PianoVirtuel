@@ -142,6 +142,7 @@ void displayText(char text[], float x, float y, float z, bool black);
 void displayText(char text, float x, float y, float z, bool black);
 void initOctaveVect();
 void initInstrument();
+void initPath();
 void pressKey(char letter, bool down);
 void pressKey(bool down);
 char keyFromID(int r);
@@ -150,42 +151,15 @@ vector<Key*> octaveVect;
 vector<bool> vb = { false, false, false, false, false, false, false ,false,false,false,false,false,false };
 
 //INSTRUMENTS
-vector<string> piano = {
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\C.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\D.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\E.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\F.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\G.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\A.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\B.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\C.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\C#.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\Eb.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\F#.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\G#.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\Bb.wav",
-};
-vector<string> guitare = {
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\C.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\D.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\E.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\F.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\G.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\A.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\B.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\C.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\C#.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\D#.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\F#.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\G#.wav",
-    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\A#.wav",
-};
+vector<string> piano;
+vector<string> guitare;
 
 //GLOBAL
 vector<vector<string>> instruments;
 int instruSelec = 0;
 boost::filesystem::path full_path;
-
+string projPath;
+string soundPath;
 
 
 // Shader stuff
@@ -474,12 +448,10 @@ int main(int argc, char* argv[])
     glutMotionFunc(deplacementSouris);
     glutReshapeFunc(redimensionner);
 
+    
+    initPath();
     initOctaveVect();
     initInstrument();
-
-    //boost::filesystem::path full_path(boost::filesystem::current_path());
-    full_path = boost::filesystem::path(boost::filesystem::current_path());
-    std::cout << "Current path is : " << full_path << std::endl;
 
     // Lancement de la boucle infinie GLUT
     glutMainLoop();
@@ -492,6 +464,13 @@ int main(int argc, char* argv[])
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void initPath() {
+    //boost::filesystem::path full_path(boost::filesystem::current_path());
+    full_path = boost::filesystem::path(boost::filesystem::current_path());
+    projPath = boost::filesystem::canonical(full_path.parent_path()).string();
+    soundPath = projPath + "/Sounds";
+}
 
 void initOctaveVect() {
     Key* keyPtr = nullptr;
@@ -510,6 +489,41 @@ void initOctaveVect() {
 }
 
 void initInstrument() {
+    //cout << "Path : " << boost::filesystem::canonical(full_path).string() << endl;
+    vector<string> piano = {
+    soundPath + "/PianoSounds/C.wav",
+    soundPath + "/PianoSounds/D.wav",
+    soundPath + "/PianoSounds/E.wav",
+    soundPath + "/PianoSounds/F.wav",
+    soundPath + "/PianoSounds/G.wav",
+    soundPath + "/PianoSounds/A.wav",
+    soundPath + "/PianoSounds/B.wav",
+    soundPath + "/PianoSounds/C.wav",
+    soundPath + "/PianoSounds/C#.wav",
+    soundPath + "/PianoSounds/Eb.wav",
+    soundPath + "/PianoSounds/F#.wav",
+    soundPath + "/PianoSounds/G#.wav",
+    soundPath + "/PianoSounds/Bb.wav"
+    };
+
+    guitare = {
+    soundPath + "/GuitarSounds/C.wav",
+    soundPath + "/GuitarSounds/D.wav",
+    soundPath + "/GuitarSounds/E.wav",
+    soundPath + "/GuitarSounds/F.wav",
+    soundPath + "/GuitarSounds/G.wav",
+    soundPath + "/GuitarSounds/A.wav",
+    soundPath + "/GuitarSounds/B.wav",
+    soundPath + "/GuitarSounds/C.wav",
+    soundPath + "/GuitarSounds/C#.wav",
+    soundPath + "/GuitarSounds/D#.wav",
+    soundPath + "/GuitarSounds/F#.wav",
+    soundPath + "/GuitarSounds/G#.wav",
+    soundPath + "/GuitarSounds/A#.wav",
+    };
+
+    cout << "Piano 0 : " << piano[0] << endl;
+    
     instruments.push_back(piano);
     instruments.push_back(guitare);
 
