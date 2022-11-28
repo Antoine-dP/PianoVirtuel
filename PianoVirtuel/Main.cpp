@@ -149,23 +149,40 @@ vector<bool> vb = { false, false, false, false, false, false, false ,false,false
 
 //INSTRUMENTS
 vector<string> piano = {
-    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\C.wav",
-    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\D.wav",
-    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\E.wav",
-    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\F.wav",
-    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\G.wav",
-    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\A.wav",
-    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\B.wav",
-    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\C.wav",
-    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\C#.wav",
-    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\Eb.wav",
-    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\F#.wav",
-    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\G#.wav",
-    "E:\\P1RV_Antoine_Maxence\\PianoSounds\\Bb.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\C.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\D.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\E.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\F.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\G.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\A.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\B.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\C.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\C#.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\Eb.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\F#.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\G#.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\PianoSounds\\Bb.wav",
+};
+
+vector<string> guitare = {
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\C.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\D.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\E.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\F.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\G.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\A.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\B.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\C.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\C#.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\D#.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\F#.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\G#.wav",
+    "E:\\P1RV_Antoine_Maxence\\Sounds\\GuitarSounds\\A#.wav",
 };
 
 //GLOBAL
 vector<vector<string>> instruments;
+int instruSelec = 0;
 
 
 
@@ -254,17 +271,11 @@ GLvoid clavier(unsigned char touche, int x, int y) {
         pressKey('O', true);
         break;
 
-    case '+':
-        // Augmenter la taille des sommets affiches
-        pointSize += 1.0f;
-        glPointSize(pointSize);
+    case '1':
+        instruSelec = 0;
         break;
-    case '-':
-        // Augmenter la taille des sommets affiches
-        pointSize -= 1.0f;
-        if (pointSize <= 0.0f)
-            pointSize = 1.0f;
-        glPointSize(pointSize);
+    case '2':
+        instruSelec = 1;
         break;
 
     //case 'q': // quitter
@@ -425,6 +436,7 @@ GLvoid redimensionner(int w, int h) {
 
 void initInstrument() {
     instruments.push_back(piano);
+    instruments.push_back(guitare);
 }
 
 int main(int argc, char* argv[])
@@ -648,79 +660,79 @@ void pressKey(char letter, bool down) {
         case 'Q':
             if (!vb[0]) {
                 vb[0] = true;
-                engine->play2D(instruments[0][0].c_str(), false);
+                engine->play2D(instruments[instruSelec][0].c_str(), false);
             }
             break;
         case'S':
             if (!vb[1]) {
                 vb[1] = true;
-                engine->play2D(instruments[0][1].c_str(), false);
+                engine->play2D(instruments[instruSelec][1].c_str(), false);
             }
             break;
         case 'D':
             if (!vb[2]) {
                 vb[2] = true;
-                engine->play2D(instruments[0][2].c_str(), false);
+                engine->play2D(instruments[instruSelec][2].c_str(), false);
             }
             break;
         case 'F':
             if (!vb[3]) {
                 vb[3] = true;
-                engine->play2D(instruments[0][3].c_str(), false);
+                engine->play2D(instruments[instruSelec][3].c_str(), false);
             }
             break;
         case 'J':
             if (!vb[4]) {
                 vb[4] = true;
-                engine->play2D(instruments[0][4].c_str(), false);
+                engine->play2D(instruments[instruSelec][4].c_str(), false);
             }
             break;
         case 'K':
             if (!vb[5]) {
                 vb[5] = true;
-                engine->play2D(instruments[0][5].c_str(), false);
+                engine->play2D(instruments[instruSelec][5].c_str(), false);
             }
             break;
         case 'L':
             if (!vb[6]) {
                 vb[6] = true;
-                engine->play2D(instruments[0][6].c_str(), false);
+                engine->play2D(instruments[instruSelec][6].c_str(), false);
             }
             break;
         case 'M':
             if (!vb[7]) {
                 vb[7] = true;
-                engine->play2D(instruments[0][7].c_str(), false);
+                engine->play2D(instruments[instruSelec][7].c_str(), false);
             }
             break;
         case 'Z':
             if (!vb[8]) {
                 vb[8] = true;
-                engine->play2D(instruments[0][8].c_str(), false);
+                engine->play2D(instruments[instruSelec][8].c_str(), false);
             }
             break;
         case 'E':
             if (!vb[9]) {
                 vb[9] = true;
-                engine->play2D(instruments[0][9].c_str(), false);
+                engine->play2D(instruments[instruSelec][9].c_str(), false);
             }
             break;
         case 'U':
             if (!vb[10]) {
                 vb[10] = true;
-                engine->play2D(instruments[0][10].c_str(), false);
+                engine->play2D(instruments[instruSelec][10].c_str(), false);
             }
             break;
         case 'I':
             if (!vb[11]) {
                 vb[11] = true;
-                engine->play2D(instruments[0][11].c_str(), false);
+                engine->play2D(instruments[instruSelec][11].c_str(), false);
             }
             break;
         case 'O':
             if (!vb[12]) {
                 vb[12] = true;
-                engine->play2D(instruments[0][12].c_str(), false);
+                engine->play2D(instruments[instruSelec][12].c_str(), false);
             }
             break;
         }
